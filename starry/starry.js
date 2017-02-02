@@ -41,7 +41,7 @@ function Player() {
   this.y = 200;
   
   this.display = function() {
-    //color(255, 255, 255);
+    
     ellipse(this.x, this.y, 20, 20);
   }
 }
