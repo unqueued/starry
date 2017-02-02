@@ -13,5 +13,17 @@ function setup() {
 }
 
 function draw() {
-  
+  background(0, 0, 0);
+}
+
+function keyPressed() {
+  if(keyCode === ENTER) {
+    console.log("Hey");
+  }
+}
+
+function windowResized() {
+WIDTH = window.innerWidth,
+HEIGHT = window.innerHeight,
+resizeCanvas(WIDTH, HEIGHT);
 }
