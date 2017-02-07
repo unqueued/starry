@@ -1,7 +1,8 @@
 /*
 
 TODO:
-Stop using an angle, and just use a vector for both position and rotation
+[ ] Stop using an angle, and just use a vector for both position and rotation
+[ ] Stop doing game logic within draw functions
 
 */
 
@@ -38,8 +39,21 @@ function handleInput() {
     player.angle += 10;
   }
   if(keyIsDown(UP_ARROW)) {
-    console.log("Thrust");
+    //console.log("Thrust");
+    player.thrust();
   }
+  if(keyIsDown(82)) {
+    //console.log("Reset");
+    player.angle = 0;
+    player.velocity.x = 0;
+    player.velocity.y = 0;
+    console.log("Reset player angle to: " + player.angle);
+  }
+}
+
+function mouseClicked() {
+  console.log("Infodump");
+  console.log("Angle: " + player.angle);
 }
 
 
@@ -61,11 +75,11 @@ function keyPressed() {
 */
 
 function mouseMoved() {
-    console.log(mouseX, lastMouseX);
+    //console.log(mouseX, lastMouseX);
     if(lastMouseX < mouseX)
-      player.angle += 20;
+      player.angle += 10;
     else if(lastMouseX > mouseX)
-      player.angle -= 20;
+      player.angle -= 10;
       
     lastMouseX = mouseX;
 }
@@ -80,25 +94,79 @@ function Player() {
   this.x = 0;
   this.y = 0;
   this.angle = 0;
-  //this.velocity = createVector(0, 0).limit(5);
-  this.velocity = 0;
+  this.velocity = createVector(0, 0).limit(1);
+  this.location = createVector(30, 30);
   
   this.update = function() {
     
   }
   
   this.display = function() {
+    
+    this.location.add(this.velocity);
+    
+    if(this.location.x < 0) {
+      this.location.x = WIDTH;
+    }
+    if(this.location.y < 0) {
+      this.location.y = HEIGHT;
+    }
+    if(this.location.x > WIDTH) {
+      this.location.x = 0;
+    }
+    if(this.location.y > HEIGHT) {
+      this.location.y = 0;
+    }
+    
+    /*
+    if(this.location.x < 0 || this.location.x > WIDTH || this.location.y < 0 || this.location.y > HEIGHT) {
+      //this.velocity.x = 0;
+      //this.velocity.y = 0;
+      this.location.x = WIDTH / 2;
+      this.location.y = HEIGHT / 2;
+    }
+    */
+    
+    // Draw the sprite like this: https://p5js.org/reference/#/p5.Vector/fromAngle
+    
     push();
-    //ellipse(this.x, this.y, 20, 20);
-    //rotate(this.angle);
-    translate(30, 30);
+
+    translate(this.location.x, this.location.y);
     rotate(radians(this.angle));
-    //translate(30, 30);
-    //translate(width/2, height/2);
+
     triangle(this.x, this.y - 15, this.x - 10, this.y + 10, this.x + 10, this.y + 10);
-    //fill(255, 0, 0);
-    //rect(this.x, this.y, 10, 10);
-    //ellipse(this.x, this.y, 10, 10);
+    
+    fill(255, 0, 0);
+    //angleV = p5.Vector.fromAngle(this.angle);
+    line(0, 0, 10, 10);
+    
     pop();
+  }
+  
+  this.thrust = function() {
+    
+    this.velocity.add(p5.Vector.fromAngle(this.angle));
+    
+    // Just use clamp() or map() or something. ALSO, don't limit components
+    // just limit magnitude
+    if(this.velocity.x > 2) {
+      this.velocity.x = 2;
+    }
+    if(this.velocity.x < -2) {
+      this.velocity.x = -2;
+    }
+    if(this.velocity.y < -2) {
+      this.velocity.y = -2;
+    }
+    if(this.velocity.y > 2) {
+      this.velocity.y = 2;
+    }
+    
+    console.log("Velocity: " + this.velocity);
+    /*
+    console.log("Velocity: " + this.velocity);
+    this.velocity.rotate(radians(this.angle));
+    console.log("Velocity: " + this.velocity);
+    */
   }
 }
