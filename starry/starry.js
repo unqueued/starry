@@ -137,7 +137,8 @@ function Player() {
     var v = p5.Vector.fromAngle(radians(this.angle));
     
     // Slow the acceleration
-    v.setMag(v.mag()/48);
+    //v.setMag(v.mag()/48);
+    v.div(48);
     
     /*
     console.log("---");
