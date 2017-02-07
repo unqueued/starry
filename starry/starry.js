@@ -26,24 +26,9 @@ function setup() {
 function draw() {
   background(0, 0, 0);
   
-  // Need to figure out degrees issue
-  //angleMode(DEGREES);
-  var v = p5.Vector.fromAngle(radians(player.angle));
-  console.log(v);
-  
-  push();
-  translate(WIDTH / 2, HEIGHT / 2);
-  rect(50, 50, 50, 50);
-  fill(255, 0, 0);
-  stroke(150);
-  line(50, 50, 80, 80);
-  line(0, 0, v.x*20, v.y*20);
-  console.log("X: " + v.x*20);
-  pop();
-  
   handleInput();
 
-  //player.display();
+  player.display();
   
   displayDebug();
   
@@ -51,7 +36,9 @@ function draw() {
 
 function displayDebug() {
   var debugInfo = 
-    "Angle: " + player.angle;
+    "player.angle:\n" + nfc(radians(player.angle), 1, 1) + " (" + nfc(player.angle, 1, 1) +"\xB0)" +
+    "\nVelocity: \n" + player.velocity +
+    "\nMagnitude: " + player.velocity.mag();
   
   fill(255, 255, 255);
   text(debugInfo, 10, 10);
@@ -150,15 +137,6 @@ function Player() {
       this.location.y = 0;
     }
     
-    /*
-    if(this.location.x < 0 || this.location.x > WIDTH || this.location.y < 0 || this.location.y > HEIGHT) {
-      //this.velocity.x = 0;
-      //this.velocity.y = 0;
-      this.location.x = WIDTH / 2;
-      this.location.y = HEIGHT / 2;
-    }
-    */
-    
     // Draw the sprite like this: https://p5js.org/reference/#/p5.Vector/fromAngle
     
     push();
@@ -166,9 +144,10 @@ function Player() {
     translate(this.location.x, this.location.y);
     rotate(radians(this.angle));
 
-    triangle(this.x, this.y - 15, this.x - 10, this.y + 10, this.x + 10, this.y + 10);
+    //triangle(this.x, this.y - 15, this.x - 10, this.y + 10, this.x + 10, this.y + 10);
     
-    fill(255, 0, 0);
+    ellipse(0, 0, 10, 10);
+    stroke(255, 0, 0);
     //angleV = p5.Vector.fromAngle(this.angle);
     line(0, 0, 10, 0);
     
@@ -177,7 +156,24 @@ function Player() {
   
   this.thrust = function() {
     
-    console.log(p5.Vector.fromAngle(radians(this.angle)));
+    var v = p5.Vector.fromAngle(radians(this.angle));
+    
+    
+    console.log("---");
+    console.log(v);
+    v.setMag(v.mag()/48);
+    console.log(v);
+    console.log(v.mag());
+    console.log("---");
+    
+    // Impose a speed limit, for sanity's sake
+    if(this.velocity.mag() > 2) {
+      this.velocity.setMag(2);
+    }
+    
+    this.velocity.add(v);
+    
+    //console.log(p5.Vector.fromAngle(radians(this.angle)));
     
     //this.velocity.add(p5.Vector.fromAngle(this.angle));
     
