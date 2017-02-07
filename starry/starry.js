@@ -52,11 +52,9 @@ function handleInput() {
     player.angle += 10;
   }
   if(keyIsDown(UP_ARROW)) {
-    //console.log("Thrust");
     player.thrust();
   }
   if(keyIsDown(82)) {
-    //console.log("Reset");
     player.angle = 0;
     player.velocity.x = 0;
     player.velocity.y = 0;
@@ -66,30 +64,11 @@ function handleInput() {
   }
 }
 
-/*
-function mouseClicked() {
-  console.log("Infodump");
-  console.log("Angle: " + player.angle);
-}
-*/
-
-
-// Going to handle this with keyIsDown instead, but don't like it being
-// in the draw() function, as I can't rely on draw() to be called consistently.
-/*
 function keyPressed() {
-  if(keyCode === ENTER) {
-    //console.log("Hey");
-    player.angle = PI/3;
-  }
-  if(keyCode == 37) {
-    console.log("Left");
-    //player.x--;
-    player.angle -= 20;
-    
+  if(keyCode == 32) {
+    console.log("Fired");
   }
 }
-*/
 
 function mouseMoved() {
     //console.log(mouseX, lastMouseX);
@@ -148,7 +127,6 @@ function Player() {
     
     ellipse(0, 0, 10, 10);
     stroke(255, 0, 0);
-    //angleV = p5.Vector.fromAngle(this.angle);
     line(0, 0, 10, 0);
     
     pop();
@@ -158,13 +136,17 @@ function Player() {
     
     var v = p5.Vector.fromAngle(radians(this.angle));
     
+    // Slow the acceleration
+    v.setMag(v.mag()/48);
     
+    /*
     console.log("---");
     console.log(v);
     v.setMag(v.mag()/48);
     console.log(v);
     console.log(v.mag());
     console.log("---");
+    */
     
     // Impose a speed limit, for sanity's sake
     if(this.velocity.mag() > 2) {
@@ -172,35 +154,5 @@ function Player() {
     }
     
     this.velocity.add(v);
-    
-    //console.log(p5.Vector.fromAngle(radians(this.angle)));
-    
-    //this.velocity.add(p5.Vector.fromAngle(this.angle));
-    
-    // Just use clamp() or map() or something. ALSO, don't limit components
-    // just limit magnitude
-    
-    // Also, I think this might be causing the problem...
-    /*
-    if(this.velocity.x > 2) {
-      this.velocity.x = 2;
-    }
-    if(this.velocity.x < -2) {
-      this.velocity.x = -2;
-    }
-    if(this.velocity.y < -2) {
-      this.velocity.y = -2;
-    }
-    if(this.velocity.y > 2) {
-      this.velocity.y = 2;
-    }
-    */
-    
-    //console.log("Velocity: " + this.velocity);
-    /*
-    console.log("Velocity: " + this.velocity);
-    this.velocity.rotate(radians(this.angle));
-    console.log("Velocity: " + this.velocity);
-    */
   }
 }
