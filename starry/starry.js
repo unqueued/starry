@@ -26,9 +26,35 @@ function setup() {
 function draw() {
   background(0, 0, 0);
   
+  // Need to figure out degrees issue
+  //angleMode(DEGREES);
+  var v = p5.Vector.fromAngle(radians(player.angle));
+  console.log(v);
+  
+  push();
+  translate(WIDTH / 2, HEIGHT / 2);
+  rect(50, 50, 50, 50);
+  fill(255, 0, 0);
+  stroke(150);
+  line(50, 50, 80, 80);
+  line(0, 0, v.x*20, v.y*20);
+  console.log("X: " + v.x*20);
+  pop();
+  
   handleInput();
 
-  player.display();
+  //player.display();
+  
+  displayDebug();
+  
+}
+
+function displayDebug() {
+  var debugInfo = 
+    "Angle: " + player.angle;
+  
+  fill(255, 255, 255);
+  text(debugInfo, 10, 10);
 }
 
 function handleInput() {
@@ -47,14 +73,18 @@ function handleInput() {
     player.angle = 0;
     player.velocity.x = 0;
     player.velocity.y = 0;
+    player.location.x = WIDTH / 2;
+    player.location.y = HEIGHT / 2;
     console.log("Reset player angle to: " + player.angle);
   }
 }
 
+/*
 function mouseClicked() {
   console.log("Infodump");
   console.log("Angle: " + player.angle);
 }
+*/
 
 
 // Going to handle this with keyIsDown instead, but don't like it being
@@ -76,10 +106,12 @@ function keyPressed() {
 
 function mouseMoved() {
     //console.log(mouseX, lastMouseX);
-    if(lastMouseX < mouseX)
+    if(lastMouseX < mouseX) {
       player.angle += 10;
-    else if(lastMouseX > mouseX)
+    }
+    else if(lastMouseX > mouseX) {
       player.angle -= 10;
+    }
       
     lastMouseX = mouseX;
 }
@@ -95,7 +127,7 @@ function Player() {
   this.y = 0;
   this.angle = 0;
   this.velocity = createVector(0, 0).limit(1);
-  this.location = createVector(30, 30);
+  this.location = createVector(WIDTH / 2, HEIGHT / 2);
   
   this.update = function() {
     
@@ -138,17 +170,22 @@ function Player() {
     
     fill(255, 0, 0);
     //angleV = p5.Vector.fromAngle(this.angle);
-    line(0, 0, 10, 10);
+    line(0, 0, 10, 0);
     
     pop();
   }
   
   this.thrust = function() {
     
-    this.velocity.add(p5.Vector.fromAngle(this.angle));
+    console.log(p5.Vector.fromAngle(radians(this.angle)));
+    
+    //this.velocity.add(p5.Vector.fromAngle(this.angle));
     
     // Just use clamp() or map() or something. ALSO, don't limit components
     // just limit magnitude
+    
+    // Also, I think this might be causing the problem...
+    /*
     if(this.velocity.x > 2) {
       this.velocity.x = 2;
     }
@@ -161,8 +198,9 @@ function Player() {
     if(this.velocity.y > 2) {
       this.velocity.y = 2;
     }
+    */
     
-    console.log("Velocity: " + this.velocity);
+    //console.log("Velocity: " + this.velocity);
     /*
     console.log("Velocity: " + this.velocity);
     this.velocity.rotate(radians(this.angle));
