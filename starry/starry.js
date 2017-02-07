@@ -39,6 +39,7 @@ function displayDebug() {
     "player.angle:\n" + nfc(radians(player.angle), 1, 1) + " (" + nfc(player.angle, 1, 1) +"\xB0)" +
     "\nVelocity: \n" + player.velocity +
     "\nMagnitude: " + player.velocity.mag();
+    //"\nBasicBullets: " + player.basicBullets;
   
   fill(255, 255, 255);
   text(debugInfo, 10, 10);
@@ -64,9 +65,17 @@ function handleInput() {
   }
 }
 
+function mouseClicked() {
+  console.log("Bullet list:");
+  player.basicBullets.forEach(function(bullet) {
+    console.log(bullet);
+  });
+}
+
 function keyPressed() {
   if(keyCode == 32) {
     console.log("Fired");
+    player.fire();
   }
 }
 
@@ -94,6 +103,7 @@ function Player() {
   this.angle = 0;
   this.velocity = createVector(0, 0).limit(1);
   this.location = createVector(WIDTH / 2, HEIGHT / 2);
+  this.basicBullets = [];
   
   this.update = function() {
     
@@ -130,6 +140,16 @@ function Player() {
     line(0, 0, 10, 0);
     
     pop();
+    
+    this.basicBullets.forEach(function(bullet) {
+      bullet.draw();
+    });
+  }
+  
+  this.fire = function() {
+    console.log(this.location);
+    // New projective inherits velocity from player
+    this.basicBullets.push(new BasicBullet(this.location, this.velocity));
   }
   
   this.thrust = function() {
@@ -150,10 +170,31 @@ function Player() {
     */
     
     // Impose a speed limit, for sanity's sake
+    // TODO use p5.Vector.limit() instead probably...
     if(this.velocity.mag() > 2) {
       this.velocity.setMag(2);
     }
     
     this.velocity.add(v);
+  }
+}
+
+function BasicBullet(location, velocity) {
+  // First, match the player
+  this.location = location.copy();
+  this.velocity = velocity.copy();
+  // Then, add onto that
+  var v = p5.Vector.fromAngle(radians(player.angle));
+  v.mult(3);
+  this.velocity.add(v);
+  //this.velocity.mult(3);
+  
+  this.draw = function() {
+    
+    this.location.add(this.velocity);
+    push();
+    translate(this.location.x, this.location.y);
+    ellipse(0, 0, 10);
+    pop();
   }
 }
