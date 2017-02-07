@@ -1,12 +1,13 @@
 var player;
 
 var
+  lastMouseX = 0;
   WIDTH = window.innerWidth,
   HEIGHT = window.innerHeight,
   FPS = 60; // Frames per second
 
 function preload() {
-  
+  lastMouseX = mouseX;
 }
 
 function setup() {
@@ -30,6 +31,10 @@ function keyPressed() {
   }
 }
 
+function mouseMoved() {
+    console.log(mouseX);
+}
+
 function windowResized() {
   WIDTH = window.innerWidth,
   HEIGHT = window.innerHeight,
@@ -37,11 +42,14 @@ function windowResized() {
 }
 
 function Player() {
-  this.x = 200;
-  this.y = 200;
+  this.x = 20;
+  this.y = 20;
+  this.angle = 0;
   
   this.display = function() {
-    
-    ellipse(this.x, this.y, 20, 20);
+    push();
+    //ellipse(this.x, this.y, 20, 20);
+    triangle(this.x, this.y - 20, this.x - 10, this.y, this.x + 10, this.y);
+    pop();
   }
 }
