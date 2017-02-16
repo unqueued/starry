@@ -39,6 +39,12 @@ function draw() {
   
   displayDebug();
   
+  // Collision detection is gonna be there for now, but will be moved into Player objects later
+  //var hit = collideRectRect(player1.);
+  //if(hit) {
+  //  console.log("Collision detected");
+  //}
+  
 }
 
 function displayDebug() {
@@ -47,14 +53,14 @@ function displayDebug() {
     "\nVelocity: \n" + player1.velocity +
     "\nMagnitude: " + player1.velocity.mag();
   
-  var debugInfoPlayer2 = 
+  debugInfoPlayer1 += 
     "player2.angle:\n" + nfc(radians(player2.angle), 1, 1) + " (" + nfc(player2.angle, 1, 1) +"\xB0)" +
     "\nVelocity: \n" + player2.velocity +
     "\nMagnitude: " + player2.velocity.mag();
   
   fill(255, 255, 255);
   text(debugInfoPlayer1, 10, 10);
-  text(debugInfoPlayer2, 10, 100);
+  //text(debugInfoPlayer2, 10, 100);
 }
 
 function handleInput() {
