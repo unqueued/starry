@@ -159,8 +159,7 @@ function Player() {
     if(DISPLAY_HITBOX) {
       
       // First display hitbox at location without transformations
-      stroke(255, 0, 0);
-      //fill(255, 0, 0);
+      fill(255, 0, 0);
       rect(this.location.x, this.location.y, 50, 50);
 
       // Then, display hitbox at loaction with transformations
@@ -169,12 +168,12 @@ function Player() {
       translate(this.location.x, this.location.y);
       rotate(radians(this.angle));
       
-      stroke(0, 255, 0);
+      fill(0, 255, 0);
       rect(0, 0, 50, 50);
       
       pop();
       
-      stroke(0, 0, 0);
+      fill(255, 255, 255);
     }
     
     push();
@@ -231,6 +230,27 @@ function BasicBullet(player) {
   this.draw = function() {
     
     this.location.add(this.velocity);
+    
+    if(DISPLAY_HITBOX) {
+      
+      // First display hitbox at location without transformations
+      fill(255, 0, 0);
+      rect(this.location.x, this.location.y, 30, 30);
+
+      // Then, display hitbox at loaction with transformations
+      push();
+      
+      translate(this.location.x, this.location.y);
+      rotate(radians(this.angle));
+      
+      fill(0, 255, 0);
+      rect(0, 0, 30, 30);
+      
+      pop();
+      
+      fill(255, 255, 255);
+    }
+    
     push();
     translate(this.location.x, this.location.y);
     rotate(radians(this.angle));
