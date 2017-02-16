@@ -197,6 +197,7 @@ function BasicBullet(player) {
   // First, match the player
   this.location = player.location.copy();
   this.velocity = player.velocity.copy();
+  this.angle = player.angle; // This is probably redundant and I can get it from v
   // Then, add onto that
   var v = p5.Vector.fromAngle(radians(player.angle));
   v.mult(3);
@@ -207,7 +208,10 @@ function BasicBullet(player) {
     this.location.add(this.velocity);
     push();
     translate(this.location.x, this.location.y);
+    rotate(radians(this.angle));
     ellipse(0, 0, 5);
+    stroke(0, 255, 0);
+    line(0, 0, 0, 20);
     pop();
   }
 }
