@@ -40,8 +40,8 @@ function draw() {
   displayDebug();
   
   // Collision detection is gonna be there for now, but will be moved into Player objects later
-  var hit = collideRectRect(player1.location.x - 20, player1.location.y - 20, 20, 20,
-    player2.location.x - 20, player2.location.y - 20, 20, 20);
+  var hit = collideRectRect(player1.location.x - 20, player1.location.y - 20, 40, 40,
+    player2.location.x - 20, player2.location.y - 20, 40, 40);
   if(hit) {
     console.log("Collision detected");
   }
@@ -171,7 +171,7 @@ function Player() {
       
       // First display hitbox at location without transformations
       fill(255, 0, 0);
-      rect(this.location.x - 20, this.location.y - 20, 20, 20);
+      rect(this.location.x - 20, this.location.y - 20, 40, 40);
 
       // Then, display hitbox at loaction with transformations
       push();
@@ -180,7 +180,7 @@ function Player() {
       rotate(radians(this.angle));
       
       fill(0, 255, 0);
-      rect(0, 0, 50, 50);
+      //rect(0, 0, 50, 50);
       
       pop();
       
