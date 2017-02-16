@@ -96,11 +96,9 @@ function mouseClicked() {
 // I'm using this fuction to capture key presses because they are naturally limited by the OS
 function keyPressed() {
   if(keyCode == 32) {
-    console.log("Fired");
     player1.fire();
   }
   if(keyCode == 86) {
-    console.log("Fired");
     player2.fire();
   }
 }
@@ -159,8 +157,6 @@ function Player() {
     translate(this.location.x, this.location.y);
     rotate(radians(this.angle));
 
-    //triangle(this.x, this.y - 15, this.x - 10, this.y + 10, this.x + 10, this.y + 10);
-    
     ellipse(0, 0, 10, 10);
     stroke(255, 0, 0);
     line(0, 0, 10, 0);
@@ -187,15 +183,6 @@ function Player() {
     //v.setMag(v.mag()/48);
     v.div(48);
     
-    /*
-    console.log("---");
-    console.log(v);
-    v.setMag(v.mag()/48);
-    console.log(v);
-    console.log(v.mag());
-    console.log("---");
-    */
-    
     // Impose a speed limit, for sanity's sake
     // TODO use p5.Vector.limit() instead probably...
     if(this.velocity.mag() > 2) {
@@ -214,7 +201,6 @@ function BasicBullet(player) {
   var v = p5.Vector.fromAngle(radians(player.angle));
   v.mult(3);
   this.velocity.add(v);
-  //this.velocity.mult(3);
   
   this.draw = function() {
     
