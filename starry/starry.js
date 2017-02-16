@@ -40,10 +40,10 @@ function draw() {
   displayDebug();
   
   // Collision detection is gonna be there for now, but will be moved into Player objects later
-  //var hit = collideRectRect(player1.);
-  //if(hit) {
-  //  console.log("Collision detected");
-  //}
+  var hit = collideRectRect(player1.location.x, player1.location.y, 40, 40, player2.location.x, player2.location.y, 40, 40);
+  if(hit) {
+    console.log("Collision detected");
+  }
   
 }
 
