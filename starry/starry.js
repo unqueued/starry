@@ -15,6 +15,10 @@ var
   HEIGHT = window.innerHeight,
   FPS = 60; // Frames per second
 
+// Debug flags
+var
+  DISPLAY_HITBOX = true;
+
 function preload() {
   lastMouseX = mouseX;
 }
@@ -151,6 +155,27 @@ function Player() {
     }
     
     // Draw the sprite like this: https://p5js.org/reference/#/p5.Vector/fromAngle
+    
+    if(DISPLAY_HITBOX) {
+      
+      // First display hitbox at location without transformations
+      stroke(255, 0, 0);
+      //fill(255, 0, 0);
+      rect(this.location.x, this.location.y, 50, 50);
+
+      // Then, display hitbox at loaction with transformations
+      push();
+      
+      translate(this.location.x, this.location.y);
+      rotate(radians(this.angle));
+      
+      stroke(0, 255, 0);
+      rect(0, 0, 50, 50);
+      
+      pop();
+      
+      stroke(0, 0, 0);
+    }
     
     push();
 
