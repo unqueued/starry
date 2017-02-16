@@ -6,7 +6,8 @@ TODO:
 
 */
 
-var player;
+var player1;
+var player2
 
 var
   lastMouseX = 0;
@@ -20,7 +21,7 @@ function preload() {
 
 function setup() {
   createCanvas(WIDTH, HEIGHT);
-  player = new Player();
+  player1 = new Player();
 }
 
 function draw() {
@@ -28,7 +29,7 @@ function draw() {
   
   handleInput();
 
-  player.display();
+  player1.display();
   
   displayDebug();
   
@@ -36,10 +37,9 @@ function draw() {
 
 function displayDebug() {
   var debugInfo = 
-    "player.angle:\n" + nfc(radians(player.angle), 1, 1) + " (" + nfc(player.angle, 1, 1) +"\xB0)" +
-    "\nVelocity: \n" + player.velocity +
-    "\nMagnitude: " + player.velocity.mag();
-    //"\nBasicBullets: " + player.basicBullets;
+    "player1.angle:\n" + nfc(radians(player1.angle), 1, 1) + " (" + nfc(player1.angle, 1, 1) +"\xB0)" +
+    "\nVelocity: \n" + player1.velocity +
+    "\nMagnitude: " + player1.velocity.mag();
   
   fill(255, 255, 255);
   text(debugInfo, 10, 10);
@@ -47,27 +47,27 @@ function displayDebug() {
 
 function handleInput() {
   if(keyIsDown(LEFT_ARROW)) {
-    player.angle -= 10;
+    player1.angle -= 10;
   }
   if(keyIsDown(RIGHT_ARROW)) {
-    player.angle += 10;
+    player1.angle += 10;
   }
   if(keyIsDown(UP_ARROW)) {
-    player.thrust();
+    player1.thrust();
   }
   if(keyIsDown(82)) {
-    player.angle = 0;
-    player.velocity.x = 0;
-    player.velocity.y = 0;
-    player.location.x = WIDTH / 2;
-    player.location.y = HEIGHT / 2;
-    console.log("Reset player angle to: " + player.angle);
+    player1.angle = 0;
+    player1.velocity.x = 0;
+    player1.velocity.y = 0;
+    player1.location.x = WIDTH / 2;
+    player1.location.y = HEIGHT / 2;
+    console.log("Reset player angle to: " + player1.angle);
   }
 }
 
 function mouseClicked() {
   console.log("Bullet list:");
-  player.basicBullets.forEach(function(bullet) {
+  player1.basicBullets.forEach(function(bullet) {
     console.log(bullet);
   });
 }
@@ -75,17 +75,17 @@ function mouseClicked() {
 function keyPressed() {
   if(keyCode == 32) {
     console.log("Fired");
-    player.fire();
+    player1.fire();
   }
 }
 
 function mouseMoved() {
     //console.log(mouseX, lastMouseX);
     if(lastMouseX < mouseX) {
-      player.angle += 10;
+      player1.angle += 10;
     }
     else if(lastMouseX > mouseX) {
-      player.angle -= 10;
+      player1.angle -= 10;
     }
       
     lastMouseX = mouseX;
@@ -147,7 +147,7 @@ function Player() {
   }
   
   this.fire = function() {
-    console.log(this.location);
+    //console.log(this.location);
     // New projective inherits velocity from player
     this.basicBullets.push(new BasicBullet(this.location, this.velocity));
   }
@@ -184,7 +184,7 @@ function BasicBullet(location, velocity) {
   this.location = location.copy();
   this.velocity = velocity.copy();
   // Then, add onto that
-  var v = p5.Vector.fromAngle(radians(player.angle));
+  var v = p5.Vector.fromAngle(radians(player1.angle));
   v.mult(3);
   this.velocity.add(v);
   //this.velocity.mult(3);
@@ -194,7 +194,7 @@ function BasicBullet(location, velocity) {
     this.location.add(this.velocity);
     push();
     translate(this.location.x, this.location.y);
-    ellipse(0, 0, 10);
+    ellipse(0, 0, 5);
     pop();
   }
 }
