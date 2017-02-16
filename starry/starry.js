@@ -22,6 +22,7 @@ function preload() {
 function setup() {
   createCanvas(WIDTH, HEIGHT);
   player1 = new Player();
+  player2 = new Player();
 }
 
 function draw() {
@@ -30,22 +31,31 @@ function draw() {
   handleInput();
 
   player1.display();
+  player2.display();
   
   displayDebug();
   
 }
 
 function displayDebug() {
-  var debugInfo = 
+  var debugInfoPlayer1 = 
     "player1.angle:\n" + nfc(radians(player1.angle), 1, 1) + " (" + nfc(player1.angle, 1, 1) +"\xB0)" +
     "\nVelocity: \n" + player1.velocity +
     "\nMagnitude: " + player1.velocity.mag();
   
+  var debugInfoPlayer2 = 
+    "player2.angle:\n" + nfc(radians(player2.angle), 1, 1) + " (" + nfc(player2.angle, 1, 1) +"\xB0)" +
+    "\nVelocity: \n" + player2.velocity +
+    "\nMagnitude: " + player2.velocity.mag();
+  
   fill(255, 255, 255);
-  text(debugInfo, 10, 10);
+  text(debugInfoPlayer1, 10, 10);
+  text(debugInfoPlayer2, 10, 100);
 }
 
 function handleInput() {
+  
+  // Player 1
   if(keyIsDown(LEFT_ARROW)) {
     player1.angle -= 10;
   }
@@ -55,6 +65,17 @@ function handleInput() {
   if(keyIsDown(UP_ARROW)) {
     player1.thrust();
   }
+  
+  if(keyIsDown(65)) {
+    player2.angle -= 10;
+  }
+  if(keyIsDown(68)) {
+    player2.angle += 10;
+  }
+  if(keyIsDown(87)) {
+    player2.thrust();
+  }
+  
   if(keyIsDown(82)) {
     player1.angle = 0;
     player1.velocity.x = 0;
@@ -72,10 +93,15 @@ function mouseClicked() {
   });
 }
 
+// I'm using this fuction to capture key presses because they are naturally limited by the OS
 function keyPressed() {
   if(keyCode == 32) {
     console.log("Fired");
     player1.fire();
+  }
+  if(keyCode == 86) {
+    console.log("Fired");
+    player2.fire();
   }
 }
 
