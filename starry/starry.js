@@ -211,7 +211,8 @@ function BasicBullet(player) {
     rotate(radians(this.angle));
     ellipse(0, 0, 5);
     stroke(0, 255, 0);
-    line(0, 0, 0, 20);
+    line(0, 0, 20, 0);
+    line(0, 0, 0, 10);
     pop();
   }
 }
