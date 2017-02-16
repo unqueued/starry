@@ -149,7 +149,8 @@ function Player() {
   this.fire = function() {
     //console.log(this.location);
     // New projective inherits velocity from player
-    this.basicBullets.push(new BasicBullet(this.location, this.velocity));
+    //this.basicBullets.push(new BasicBullet(this.location, this.velocity));
+    this.basicBullets.push(new BasicBullet(this));
   }
   
   this.thrust = function() {
@@ -179,12 +180,12 @@ function Player() {
   }
 }
 
-function BasicBullet(location, velocity) {
+function BasicBullet(player) {
   // First, match the player
-  this.location = location.copy();
-  this.velocity = velocity.copy();
+  this.location = player.location.copy();
+  this.velocity = player.velocity.copy();
   // Then, add onto that
-  var v = p5.Vector.fromAngle(radians(player1.angle));
+  var v = p5.Vector.fromAngle(radians(player.angle));
   v.mult(3);
   this.velocity.add(v);
   //this.velocity.mult(3);
