@@ -40,7 +40,8 @@ function draw() {
   displayDebug();
   
   // Collision detection is gonna be there for now, but will be moved into Player objects later
-  var hit = collideRectRect(player1.location.x, player1.location.y, 30, 30, player2.location.x, player2.location.y, 30, 30);
+  var hit = collideRectRect(player1.location.x - 20, player1.location.y - 20, 20, 20,
+    player2.location.x - 20, player2.location.y - 20, 20, 20);
   if(hit) {
     console.log("Collision detected");
   }
@@ -111,6 +112,10 @@ function keyPressed() {
   if(keyCode == 86) {
     player2.fire();
   }
+  if(keyCode == 83) {
+    player1.velocity.setMag(0);
+    player2.velocity.setMag(0);
+  }
 }
 
 function mouseMoved() {
@@ -166,7 +171,7 @@ function Player() {
       
       // First display hitbox at location without transformations
       fill(255, 0, 0);
-      rect(this.location.x, this.location.y, 50, 50);
+      rect(this.location.x - 20, this.location.y - 20, 20, 20);
 
       // Then, display hitbox at loaction with transformations
       push();
@@ -196,6 +201,7 @@ function Player() {
     this.basicBullets.forEach(function(bullet) {
       bullet.draw();
     });
+    
   }
   
   this.fire = function() {
@@ -237,12 +243,12 @@ function BasicBullet(player) {
     
     this.location.add(this.velocity);
     
-    if(DISPLAY_HITBOX) {
+    if(DISPLAY_HITBOX == 1) { // To disable it...
       
       // First display hitbox at location without transformations
       fill(255, 0, 0);
       rect(this.location.x, this.location.y, 30, 30);
-
+      
       // Then, display hitbox at loaction with transformations
       push();
       
@@ -265,5 +271,6 @@ function BasicBullet(player) {
     line(0, 0, 20, 0);
     line(0, 0, 0, 10);
     pop();
+    
   }
 }
