@@ -73,7 +73,7 @@ function detectCollisions() {
   // Detect player1's collision with player2
   var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
   if(hit) {
-    console.log("Collision detected");
+    //console.log("Collision detected");
   }
   
   // TODO: Remove projectiles more cleanly, and atomically.
@@ -131,14 +131,14 @@ function handleInput() {
     player2.velocity.y = 0;
     player2.location.x = WIDTH / 2;
     player2.location.y = HEIGHT / 2;
-    console.log("Reset player angles");
+    //console.log("Reset player angles");
   }
 }
 
 function mouseClicked() {
-  console.log("Bullet list:");
+  //console.log("Bullet list:");
   player1.basicBullets.forEach(function(bullet) {
-    console.log(bullet);
+    //console.log(bullet);
   });
 }
 
@@ -289,8 +289,8 @@ function BasicBullet(player) {
   this.draw = function() {
     
     if(--this.ttl < 0) {
-      console.log(this + " died");
-      console.log("Removing: " + this.parent.basicBullets.indexOf(this));
+      //console.log(this + " died");
+      //console.log("Removing: " + this.parent.basicBullets.indexOf(this));
       this.parent.basicBullets.splice(this.parent.basicBullets.indexOf(this), 1);
     }
     
