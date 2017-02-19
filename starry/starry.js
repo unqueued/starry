@@ -17,7 +17,7 @@ var
 
 // Debug flags
 var
-  DISPLAY_HITBOX = true;
+  DISPLAY_HITBOX = false;
 
 function preload() {
   lastMouseX = mouseX;
@@ -36,6 +36,8 @@ function draw() {
 
   player1.display();
   player2.display();
+  
+  detectCollisions();
   
   displayDebug();
   
@@ -63,6 +65,10 @@ function displayDebug() {
   fill(255, 255, 255);
   text(debugInfoPlayer1, 10, 10);
   //text(debugInfoPlayer2, 10, 100);
+}
+
+function detectCollisions() {
+  
 }
 
 function handleInput() {
@@ -245,7 +251,7 @@ function BasicBullet(player) {
     
     this.location.add(this.velocity);
     
-    if(DISPLAY_HITBOX == 1) { // To disable it...
+    if(DISPLAY_HITBOX) { // To disable it...
       
       // First display hitbox at location without transformations
       fill(255, 0, 0);
