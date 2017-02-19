@@ -280,6 +280,11 @@ function Player() {
   }
   
   this.detectCollisions = function(otherShip) {
+    
+    // Detect other ship collisions
+    
+    
+    // Detect bullet collisions
     if(this.basicBullets.length > 0) {
       for(var i = 0; i < this.basicBullets.length; i++) {
         var hit = collideCircleCircle(
@@ -292,6 +297,7 @@ function Player() {
         }
       }
     }
+    
   }
   
   this.hit = function(bullet) {
