@@ -3,6 +3,7 @@
 TODO:
 [ ] Stop using an angle, and just use a vector for both position and rotation
 [ ] Stop doing game logic within draw functions
+[ ] Garbage collection can be complicated. Be sure you're actually removing projectiles.
 
 */
 
@@ -75,16 +76,21 @@ function detectCollisions() {
     console.log("Collision detected");
   }
   
+  // TODO: Remove projectiles more cleanly, and atomically.
+  
   // Detect player1's projectile collisions with player2
   // Don't wanna do foreach right now...
   if(player1.basicBullets.length > 1) {
     for(var i = 0; i < player1.basicBullets.length; i++) {
-      console.log(
-        collideCircleCircle(
+        var hit = collideCircleCircle(
           player1.basicBullets[i].location.x, player1.basicBullets[i].location.y, 20,
           player2.location.x, player2.location.y, 20
-          )
-        );
+          );
+          if(hit) {
+            //console.log("Hit by: " + player1.basicBullets[i].parent);
+            //console.log("Removing element " + i + " from " + player1.basicBullets);
+            player1.basicBullets.splice(i, 1);
+          }
     }
   }
   
@@ -266,6 +272,11 @@ function BasicBullet(player) {
   this.width = 30;
   this.height = 30;
   
+  // Reference to player that we fired from
+  this.parent = player;
+  
+  this.ttl = 20;
+  
   // First, match the player
   this.location = player.location.copy();
   this.velocity = player.velocity.copy();
@@ -276,6 +287,12 @@ function BasicBullet(player) {
   this.velocity.add(v);
   
   this.draw = function() {
+    
+    if(--this.ttl < 0) {
+      console.log(this + " died");
+      console.log("Removing: " + this.parent.basicBullets.indexOf(this));
+      this.parent.basicBullets.splice(this.parent.basicBullets.indexOf(this), 1);
+    }
     
     this.location.add(this.velocity);
     
