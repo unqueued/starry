@@ -92,7 +92,7 @@ function detectCollisions() {
   
   // Detect player1's projectile collisions with player2
   // Don't wanna do foreach right now...
-  if(player1.basicBullets.length > 1) {
+  if(player1.basicBullets.length > 0) {
     for(var i = 0; i < player1.basicBullets.length; i++) {
         var hit = collideCircleCircle(
           player1.basicBullets[i].location.x, player1.basicBullets[i].location.y, 20,
