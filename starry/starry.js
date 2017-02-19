@@ -8,7 +8,7 @@ TODO:
 */
 
 var player1;
-var player2
+var player2;
 
 var
   lastMouseX = 0;
@@ -53,6 +53,8 @@ function draw() {
 }
 
 function displayDebug() {
+  /*
+  
   var debugInfoPlayer1 = 
     "player1.angle:\n" + nfc(radians(player1.angle), 1, 1) + " (" + nfc(player1.angle, 1, 1) +"\xB0)" +
     "\nVelocity: \n" + player1.velocity +
@@ -66,6 +68,16 @@ function displayDebug() {
   fill(255, 255, 255);
   text(debugInfoPlayer1, 10, 10);
   //text(debugInfoPlayer2, 10, 100);
+  */
+  
+  var debugDisplay = [];
+  
+  debugDisplay.push("player1 projectiles: " + player1.basicBullets);
+  debugDisplay.push("player2 projectiles: " + player2.basicBullets);
+  
+  fill(255, 255, 255);
+  text(debugDisplay.join("\n"), 10, 10);
+  
 }
 
 function detectCollisions() {
@@ -87,8 +99,9 @@ function detectCollisions() {
           player2.location.x, player2.location.y, 20
           );
           if(hit) {
-            //console.log("Hit by: " + player1.basicBullets[i].parent);
-            //console.log("Removing element " + i + " from " + player1.basicBullets);
+            console.log("Hit by: " + player1.basicBullets[i].parent);
+            console.log("Removing element " + i + " from " + player1.basicBullets);
+            player2.hit(player1.basicBullets[i]);
             player1.basicBullets.splice(i, 1);
           }
     }
@@ -140,6 +153,9 @@ function mouseClicked() {
   player1.basicBullets.forEach(function(bullet) {
     //console.log(bullet);
   });
+  console.log("Dumping relevant game state data:");
+  console.log(player1);
+  console.log(player2);
 }
 
 // I'm using this fuction to capture key presses because they are naturally limited by the OS
@@ -181,6 +197,7 @@ function Player() {
   this.velocity = createVector(0, 0).limit(1);
   this.location = createVector(WIDTH / 2, HEIGHT / 2);
   this.basicBullets = [];
+  this.health = 100;
   
   this.update = function() {
     
@@ -226,21 +243,50 @@ function Player() {
       fill(255, 255, 255);
     }
     
+    // Display health stats
+    text(this.health, this.location.x, this.location.y);
+    
     push();
-
+    
     translate(this.location.x, this.location.y);
     rotate(radians(this.angle));
-
+    
+    // TODO make nice sprites or something later
+    
+    // Differentiate color based on which player we are
+    if(this == player1) {
+      fill(0, 255, 0);
+    } else {
+      fill(0, 0, 255);
+    }
     ellipse(0, 0, 10, 10);
+    
     stroke(255, 0, 0);
     line(0, 0, 10, 0);
     
     pop();
     
+    stroke(0, 0, 0);
+    fill(255, 255, 255);
+    
     this.basicBullets.forEach(function(bullet) {
       bullet.draw();
     });
     
+  }
+  
+  this.hit = function(bullet) {
+    // Deduct damage from bullet, but just hard code value for now
+    this.health -= bullet.damage;
+    if(this.health < 0) {
+      this.health = 0;
+    }
+    
+    // Get pushed by torpedo
+    var bulletVelocity = bullet.velocity;
+    bulletVelocity.div(2);
+    
+    this.velocity.add(bulletVelocity);
   }
   
   this.fire = function() {
@@ -271,11 +317,12 @@ function Player() {
 function BasicBullet(player) {
   this.width = 30;
   this.height = 30;
+  this.damage = 12;
   
   // Reference to player that we fired from
   this.parent = player;
   
-  this.ttl = 20;
+  this.ttl = 90;
   
   // First, match the player
   this.location = player.location.copy();
@@ -288,6 +335,7 @@ function BasicBullet(player) {
   
   this.draw = function() {
     
+    // Purge bullet if it has existed too long
     if(--this.ttl < 0) {
       //console.log(this + " died");
       //console.log("Removing: " + this.parent.basicBullets.indexOf(this));
