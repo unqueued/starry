@@ -68,7 +68,7 @@ function displayDebug() {
 }
 
 function detectCollisions() {
-  // Much room for this to be prettier
+  // Much room for this to be prettier and more efficient and stuff
   // Detect player1's collision with player2
   var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
   if(hit) {
@@ -76,6 +76,17 @@ function detectCollisions() {
   }
   
   // Detect player1's projectile collisions with player2
+  // Don't wanna do foreach right now...
+  if(player1.basicBullets.length > 1) {
+    for(var i = 0; i < player1.basicBullets.length; i++) {
+      console.log(
+        collideCircleCircle(
+          player1.basicBullets[i].location.x, player1.basicBullets[i].location.y, 20,
+          player2.location.x, player2.location.y, 20
+          )
+        );
+    }
+  }
   
 }
 
