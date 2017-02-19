@@ -17,7 +17,7 @@ var
 
 // Debug flags
 var
-  DISPLAY_HITBOX = false;
+  DISPLAY_HITBOX = true;
 
 function preload() {
   lastMouseX = mouseX;
@@ -44,10 +44,10 @@ function draw() {
   // Collision detection is gonna be there for now, but will be moved into Player objects later
   //var hit = collideRectRect(player1.location.x - 20, player1.location.y - 20, 40, 40,
     //player2.location.x - 20, player2.location.y - 20, 40, 40);
-  var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
-  if(hit) {
-    console.log("Collision detected");
-  }
+  //var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
+  //if(hit) {
+  //  console.log("Collision detected");
+  //}
   
 }
 
@@ -68,6 +68,14 @@ function displayDebug() {
 }
 
 function detectCollisions() {
+  // Much room for this to be prettier
+  // Detect player1's collision with player2
+  var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
+  if(hit) {
+    console.log("Collision detected");
+  }
+  
+  // Detect player1's projectile collisions with player2
   
 }
 
@@ -100,7 +108,13 @@ function handleInput() {
     player1.velocity.y = 0;
     player1.location.x = WIDTH / 2;
     player1.location.y = HEIGHT / 2;
-    console.log("Reset player angle to: " + player1.angle);
+    
+    player2.angle = 0;
+    player2.velocity.x = 0;
+    player2.velocity.y = 0;
+    player2.location.x = WIDTH / 2;
+    player2.location.y = HEIGHT / 2;
+    console.log("Reset player angles");
   }
 }
 
@@ -238,6 +252,9 @@ function Player() {
 }
 
 function BasicBullet(player) {
+  this.width = 30;
+  this.height = 30;
+  
   // First, match the player
   this.location = player.location.copy();
   this.velocity = player.velocity.copy();
@@ -255,9 +272,10 @@ function BasicBullet(player) {
       
       // First display hitbox at location without transformations
       fill(255, 0, 0);
-      rect(this.location.x, this.location.y, 30, 30);
+      ellipse(this.location.x, this.location.y, this.width, this.height);
       
       // Then, display hitbox at loaction with transformations
+      /*
       push();
       
       translate(this.location.x, this.location.y);
@@ -267,6 +285,9 @@ function BasicBullet(player) {
       rect(0, 0, 30, 30);
       
       pop();
+      */
+      // Actually, I'm not gonna bother with that for right now.
+      
       
       fill(255, 255, 255);
     }
