@@ -83,29 +83,33 @@ function displayDebug() {
 function detectCollisions() {
   // Much room for this to be prettier and more efficient and stuff
   // Detect player1's collision with player2
-  var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
-  if(hit) {
+  //var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
+  //if(hit) {
     //console.log("Collision detected");
-  }
+  //}
   
   // TODO: Remove projectiles more cleanly, and atomically.
   
   // Detect player1's projectile collisions with player2
   // Don't wanna do foreach right now...
+  /*
   if(player1.basicBullets.length > 0) {
     for(var i = 0; i < player1.basicBullets.length; i++) {
-        var hit = collideCircleCircle(
-          player1.basicBullets[i].location.x, player1.basicBullets[i].location.y, 20,
-          player2.location.x, player2.location.y, 20
-          );
-          if(hit) {
-            console.log("Hit by: " + player1.basicBullets[i].parent);
-            console.log("Removing element " + i + " from " + player1.basicBullets);
-            player2.hit(player1.basicBullets[i]);
-            player1.basicBullets.splice(i, 1);
-          }
+      var hit = collideCircleCircle(
+        player1.basicBullets[i].location.x, player1.basicBullets[i].location.y, 20,
+        player2.location.x, player2.location.y, 20
+        );
+      if(hit) {
+        console.log("Hit by: " + player1.basicBullets[i].parent);
+        console.log("Removing element " + i + " from " + player1.basicBullets);
+        player2.hit(player1.basicBullets[i]);
+        player1.basicBullets.splice(i, 1);
+      }
     }
   }
+  */
+  player1.detectCollisions(player2);
+  player2.detectCollisions(player1);
   
 }
 
@@ -273,6 +277,21 @@ function Player() {
       bullet.draw();
     });
     
+  }
+  
+  this.detectCollisions = function(otherShip) {
+    if(this.basicBullets.length > 0) {
+      for(var i = 0; i < this.basicBullets.length; i++) {
+        var hit = collideCircleCircle(
+          this.basicBullets[i].location.x, this.basicBullets[i].location.y, 20,
+          otherShip.location.x, otherShip.location.y, 20
+          );
+        if(hit) {
+          otherShip.hit(this.basicBullets[i]);
+          this.basicBullets.splice(i, 1);
+        }
+      }
+    }
   }
   
   this.hit = function(bullet) {
