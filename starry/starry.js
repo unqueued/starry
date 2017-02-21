@@ -402,5 +402,15 @@ function BasicBullet(player) {
     line(0, 0, 0, 10);
     pop();
     
+    // Show velocity
+    text(this.velocity, this.location.x, this.location.y);
+    
+    this.velocity.mult(1.05);
+        // Impose a speed limit, for sanity's sake
+    // TODO use p5.Vector.limit() instead probably...
+    if(this.velocity.mag() > 2) {
+      //this.velocity.setMag(2);
+    }
+    
   }
 }
