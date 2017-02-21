@@ -14,13 +14,16 @@ var player2;
 
 var
   lastMouseX = 0;
-  WIDTH = window.innerWidth,
+  WIDTH = window.innerWidth - panelHeight,
   HEIGHT = window.innerHeight,
   FPS = 60; // Frames per second
 
 // Debug flags
 var
-  DISPLAY_HITBOX = true;
+  DISPLAY_HITBOX = false;
+
+var panelSizeX = 50;
+var panelSizeY = WIDTH;
 
 function preload() {
   lastMouseX = mouseX;
@@ -212,7 +215,7 @@ function mouseMoved() {
 }
 
 function windowResized() {
-  WIDTH = window.innerWidth,
+  WIDTH = window.innerWidth - panelHeight,
   HEIGHT = window.innerHeight,
   resizeCanvas(WIDTH, HEIGHT);
 }
