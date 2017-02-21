@@ -12,25 +12,25 @@ var gameState;
 var player1;
 var player2;
 
+var panelWidth = window.innerWidth
+var panelHeight = 90;
+
 var
   lastMouseX = 0;
-  WIDTH = window.innerWidth - panelHeight,
-  HEIGHT = window.innerHeight,
+  WIDTH = window.innerWidth,
+  HEIGHT = window.innerHeight - panelHeight,
   FPS = 60; // Frames per second
 
 // Debug flags
 var
   DISPLAY_HITBOX = false;
 
-var panelSizeX = 50;
-var panelSizeY = WIDTH;
-
 function preload() {
   lastMouseX = mouseX;
 }
 
 function setup() {
-  createCanvas(WIDTH, HEIGHT);
+  createCanvas(WIDTH, HEIGHT + panelHeight);
   player1 = new Player();
   player2 = new Player();
   
@@ -46,6 +46,9 @@ function setup() {
 
 function draw() {
   background(0, 0, 0);
+  fill(255, 255, 255);
+  //stroke(255, 255, 255);
+  stroke(0, 0, 0);
   
   handleInput();
   
@@ -55,6 +58,8 @@ function draw() {
   
   displayDebug();
   
+  displayPanel();
+  
   // Collision detection is gonna be there for now, but will be moved into Player objects later
   //var hit = collideRectRect(player1.location.x - 20, player1.location.y - 20, 40, 40,
     //player2.location.x - 20, player2.location.y - 20, 40, 40);
@@ -63,6 +68,13 @@ function draw() {
   //  console.log("Collision detected");
   //}
   
+}
+
+function displayPanel() {
+  fill(128, 128, 128);
+  color(255, 0, 0);
+  stroke(255, 0, 0);
+  rect(0, HEIGHT, panelWidth, panelHeight);
 }
 
 function displayDebug() {
@@ -85,9 +97,12 @@ function displayDebug() {
   
   var debugDisplay = [];
   
+  debugDisplay.push("HEIGHT: " + HEIGHT + " window.innerHeight: " + window.innerHeight);
   debugDisplay.push("player1 projectiles: " + player1.basicBullets);
   debugDisplay.push("player2 projectiles: " + player2.basicBullets);
   debugDisplay.push("GameState: " + gameState.state);
+  debugDisplay.push("Player1: " + player1.location);
+  debugDisplay.push("Player2: " + player2.location);
   
   fill(255, 255, 255);
   text(debugDisplay.join("\n"), 10, 10);
@@ -215,8 +230,8 @@ function mouseMoved() {
 }
 
 function windowResized() {
-  WIDTH = window.innerWidth - panelHeight,
-  HEIGHT = window.innerHeight,
+  WIDTH = window.innerWidth,
+  HEIGHT = window.innerHeight - panelHeight,
   resizeCanvas(WIDTH, HEIGHT);
 }
 
@@ -306,12 +321,15 @@ function Player() {
       this.location.x = WIDTH;
     }
     if(this.location.y < 0) {
+      console.log("Crossing HEIGHT = " + HEIGHT + " as opposed to window.innerHeight:" + window.innerHeight);
       this.location.y = HEIGHT;
+      console.log(this.location.y);
     }
     if(this.location.x > WIDTH) {
       this.location.x = 0;
     }
     if(this.location.y > HEIGHT) {
+      console.log("Setting y location to: " + HEIGHT);
       this.location.y = 0;
     }
     
@@ -341,7 +359,8 @@ function Player() {
     // Display health stats
     //text(this.health, this.location.x, this.location.y);
     s = this.velocity + "\n";
-    s = s + this.collisionCooldown;
+    s = s + this.collisionCooldown + "\n";
+    s = s + this.location + "\n";
     text(s, this.location.x, this.location.y);
     
     push();
