@@ -244,6 +244,8 @@ function mouseMoved() {
 }
 
 function windowResized() {
+  return;
+  
   WIDTH = window.innerWidth,
   HEIGHT = window.innerHeight - panelHeight,
   resizeCanvas(WIDTH, HEIGHT);
@@ -310,6 +312,8 @@ function GameState() {
 function Player() {
   this.x = 0;
   this.y = 0;
+  this.width = 30;
+  this.height = 30;
   this.angle = 0;
   this.velocity = createVector(0, 0).limit(1);
   this.location = createVector(WIDTH / 2, HEIGHT / 2);
@@ -409,8 +413,8 @@ function Player() {
     
     // Detect other ship collisions
     var hit = collideCircleCircle(
-      this.location.x, this.location.y, 20,
-      otherShip.location.x, otherShip.location.y, 20
+      this.location.x, this.location.y, this.width,
+      otherShip.location.x, otherShip.location.y, otherShip.width
       );
     if(this.collisionCooldown > 0) {
       hit = false;
@@ -432,8 +436,8 @@ function Player() {
     if(this.basicBullets.length > 0) {
       for(var i = 0; i < this.basicBullets.length; i++) {
         var hit = collideCircleCircle(
-          this.basicBullets[i].location.x, this.basicBullets[i].location.y, 20,
-          otherShip.location.x, otherShip.location.y, 20
+          this.basicBullets[i].location.x, this.basicBullets[i].location.y, this.basicBullets[i].width,
+          otherShip.location.x, otherShip.location.y, this.basicBullets[i].height
           );
         if(hit) {
           otherShip.hit(this.basicBullets[i]);
@@ -498,8 +502,8 @@ function Player() {
 }
 
 function BasicBullet(player) {
-  this.width = 30;
-  this.height = 30;
+  this.width = 20;
+  this.height = 20;
   this.damage = 12;
   
   // Reference to player that we fired from
@@ -570,8 +574,9 @@ function BasicBullet(player) {
     rotate(radians(this.angle));
     ellipse(0, 0, 5);
     stroke(0, 255, 0);
-    line(0, 0, 20, 0);
-    line(0, 0, 0, 10);
+    line(0, 0, this.width, 0);
+    line(0, 0, 0, this.height);
+    
     pop();
     
     if(DISPLAY_DEBUG) {
