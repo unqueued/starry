@@ -75,9 +75,36 @@ function draw() {
 
 function displayPanel() {
   fill(128, 128, 128);
-  color(255, 0, 0);
-  stroke(255, 0, 0);
+  //color(255, 255, 255);
+  //stroke(255, 255, 255);
   rect(0, HEIGHT, panelWidth, panelHeight);
+  
+  // TODO just make this a function (or not, perfect is the enemy of good...)
+  // Display player 1
+  //fill(0, 255, 0);
+  fill(128, 128, 128);
+  stroke(0, 0, 0);
+  rect(0, HEIGHT, 150, panelHeight);
+  var t = [];
+  t.push("Player 1");
+  t.push("Score: " + player1.score);
+  t.push("Health: " + player1.health);
+  t.push("Weapon alignment:");
+  fill(0, 255, 0);
+  text(t.join("\n"), 10, HEIGHT + 20);
+
+  // Display player 2
+  fill(128, 128, 128);
+  stroke(0, 0, 0);
+  rect(WIDTH - 150, HEIGHT, 150, panelHeight);
+  var t = [];
+  t.push("Player 2");
+  t.push("Score: " + player2.score);
+  t.push("Health: " + player2.health);
+  t.push("Weapon alignment:");
+  fill(0, 0, 255);
+  text(t.join("\n"), WIDTH - 150 + 10, HEIGHT + 20);
+  
 }
 
 function displayDebug() {
@@ -294,7 +321,7 @@ function GameState() {
         if(this.player1Start) {
           s = s.concat("Player 1 READY\n");
         } else {
-          s = s.concat("Player 2 Press start\n");
+          s = s.concat("Player 1 Press start\n");
         }
         if(this.player2Start) {
           s = s.concat("Player 2 READY\n");
@@ -322,6 +349,7 @@ function Player() {
   this.defaultX;
   this.defaultY;
   this.collisionCooldown = 0;
+  this.score = 0;
   
   this.update = function() {
     
