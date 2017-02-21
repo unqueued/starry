@@ -365,7 +365,13 @@ function Player() {
   this.detectCollisions = function(otherShip) {
     
     // Detect other ship collisions
-    
+    var hit = collideCircleCircle(
+      this.location.x, this.location.y, 20,
+      otherShip.location.x, otherShip.location.y, 20
+      );
+    if(hit) {
+      console.log("Ship to ship collision");
+    }
     
     // Detect bullet collisions
     if(this.basicBullets.length > 0) {
