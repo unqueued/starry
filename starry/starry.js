@@ -7,6 +7,8 @@ TODO:
 
 */
 
+var gameState;
+
 var player1;
 var player2;
 
@@ -34,15 +36,17 @@ function setup() {
   
   player1.location.x = player1.defaultX;
   player2.location.x = player2.defaultX;
+  
+  gameState = new GameState();
+  
 }
 
 function draw() {
   background(0, 0, 0);
   
   handleInput();
-
-  player1.display();
-  player2.display();
+  
+  gameState.display();
   
   detectCollisions();
   
@@ -80,6 +84,7 @@ function displayDebug() {
   
   debugDisplay.push("player1 projectiles: " + player1.basicBullets);
   debugDisplay.push("player2 projectiles: " + player2.basicBullets);
+  debugDisplay.push("GameState: " + gameState.state);
   
   fill(255, 255, 255);
   text(debugDisplay.join("\n"), 10, 10);
@@ -170,25 +175,37 @@ function mouseClicked() {
 
 // I'm using this fuction to capture key presses because they are naturally limited by the OS
 function keyPressed() {
-  if(keyCode == 32) {
-    player1.fire();
+  if(gameState.state == "play") {
+    if(keyCode == 32) {
+      player1.fire();
+    }
+    if(keyCode == 86) {
+      player2.fire();
+    }
+    if(keyCode == 83) {
+      player1.velocity.setMag(0);
+      player2.velocity.setMag(0);
+    }
   }
-  if(keyCode == 86) {
-    player2.fire();
-  }
-  if(keyCode == 83) {
-    player1.velocity.setMag(0);
-    player2.velocity.setMag(0);
+  if(gameState.state == "attract") {
+    if(keyCode == 49) {
+      gameState.setPlayer1Start();
+    }
+    if(keyCode == 50) {
+      gameState.setPlayer2Start();
+    }
   }
 }
 
 function mouseMoved() {
-    //console.log(mouseX, lastMouseX);
-    if(lastMouseX < mouseX) {
-      player1.angle += 10;
-    }
-    else if(lastMouseX > mouseX) {
-      player1.angle -= 10;
+    if(gameState.state == "play") {
+      //console.log(mouseX, lastMouseX);
+      if(lastMouseX < mouseX) {
+        player1.angle += 10;
+      }
+      else if(lastMouseX > mouseX) {
+        player1.angle -= 10;
+      }
     }
       
     lastMouseX = mouseX;
@@ -198,6 +215,64 @@ function windowResized() {
   WIDTH = window.innerWidth,
   HEIGHT = window.innerHeight,
   resizeCanvas(WIDTH, HEIGHT);
+}
+
+function GameState() {
+    
+    this.state = "attract";
+    this.player1Start = false;
+    this.player2Start = false;
+    
+    this.setPlayer1Start = function() {
+      console.log("Player 1 ready");
+      this.player1Start = true;
+      if(this.player2Start && this.player1Start) {
+        this.setStatePlay();
+      }
+    }
+    
+    this.setPlayer2Start = function() {
+      console.log("Player 2 ready");
+      this.player2Start = true;
+      if(this.player2Start && this.player1Start) {
+        this.setStatePlay();
+      }
+    }
+    
+    this.setStateAttract = function() {
+      this.state = "attract";
+      this.player1Start = false;
+      this.player2Start = false;
+    }
+    
+    this.setStatePlay = function() {
+      this.state = "play";
+    }
+    
+    this.display = function() {
+      if(this.state == "play") {
+        player1.display();
+        player2.display();
+      }
+      if(this.state == "attract") {
+        s = 
+        "Players press start to begin\n";
+        if(this.player1Start) {
+          s = s.concat("Player 1 READY\n");
+        } else {
+          s = s.concat("Player 2 Press start\n");
+        }
+        if(this.player2Start) {
+          s = s.concat("Player 2 READY\n");
+        } else {
+          s = s.concat("Player 2 Press start\n");
+        }
+        
+        
+        text(s, WIDTH / 2, HEIGHT / 2);
+      }
+    }
+    
 }
 
 function Player() {
