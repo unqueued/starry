@@ -29,7 +29,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = true;
+  DISPLAY_DEBUG = false;
 
 function preload() {
   lastMouseX = mouseX;
@@ -547,6 +547,8 @@ function Player() {
     if(this.health < 0) {
       this.health = 0;
     }
+    explosions.push(new explosionAnimation(bullet.location.x, bullet.location.y));
+    //console.log("Making explosion at :" + bullet.location.x, bullet.location.y);
     
     // Get pushed by torpedo
     var bulletVelocity = bullet.velocity;
