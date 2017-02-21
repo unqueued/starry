@@ -8,6 +8,25 @@ TODO:
 [ ] For the asynchronous stuff (like waiting between the gameover and continue states, maybe use callbacks)
 May also want to use callbacks for other stuff, as well.
 I think this would be much better if it were async more.
+
+Some more stuff --
+Also, use setTimeout() function.
+MAke it easier to reset Players
+Try to do nearly everythign with getter/setters.
+This should alleviate some of the issues with the code becoming speghetti.
+
+https://forum.processing.org/two/discussion/14798/how-to-split-a-p5-js-sketch-into-multiple-files
+https://www.youtube.com/watch?v=Yk18ZKvXBj4
+
+
+https://github.com/processing/p5.js/wiki/p5.js,-node.js,-socket.io
+http://ability.nyu.edu/p5.js-speech/
+
+https://forum.processing.org/two/discussion/9707/creating-threads-in-processing
+
+http://javascript.info/tutorial/settimeout-setinterval
+
+
 */
 
 var gameState;
