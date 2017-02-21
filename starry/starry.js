@@ -28,6 +28,12 @@ function setup() {
   createCanvas(WIDTH, HEIGHT);
   player1 = new Player();
   player2 = new Player();
+  
+  player1.defaultX = WIDTH / 3;
+  player2.defaultX = WIDTH * 2/3;
+  
+  player1.location.x = player1.defaultX;
+  player2.location.x = player2.defaultX;
 }
 
 function draw() {
@@ -140,13 +146,13 @@ function handleInput() {
     player1.angle = 0;
     player1.velocity.x = 0;
     player1.velocity.y = 0;
-    player1.location.x = WIDTH / 2;
+    player1.location.x = player1.defaultX;
     player1.location.y = HEIGHT / 2;
     
     player2.angle = 0;
     player2.velocity.x = 0;
     player2.velocity.y = 0;
-    player2.location.x = WIDTH / 2;
+    player2.location.x = player2.defaultX;
     player2.location.y = HEIGHT / 2;
     //console.log("Reset player angles");
   }
@@ -202,6 +208,8 @@ function Player() {
   this.location = createVector(WIDTH / 2, HEIGHT / 2);
   this.basicBullets = [];
   this.health = 100;
+  this.defaultX;
+  this.defaultY;
   
   this.update = function() {
     
