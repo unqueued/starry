@@ -29,7 +29,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = true;
+  DISPLAY_DEBUG = false;
 
 function preload() {
   lastMouseX = mouseX;
