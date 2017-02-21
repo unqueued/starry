@@ -122,7 +122,7 @@ function displayPanel() {
   t.push("Player 1");
   t.push("Score: " + player1.score);
   t.push("Health: " + player1.health);
-  t.push("Weapon alignment:");
+  //t.push("Power :");
   fill(238, 154, 0);
   text(t.join("\n"), 10, HEIGHT + 20);
 
@@ -134,12 +134,13 @@ function displayPanel() {
   t.push("Player 2");
   t.push("Score: " + player2.score);
   t.push("Health: " + player2.health);
-  t.push("Weapon alignment:");
+  //t.push("Weapon alignment:");
   fill(0, 0, 255);
   text(t.join("\n"), WIDTH - 150 + 10, HEIGHT + 20);
   
 }
 
+// I could make a few variations of this, or, at least, let me specify a gif to use
 function explosionAnimation(x, y) {
   this.x = x;
   this.y = y;
@@ -481,6 +482,8 @@ function Player() {
   this.defaultY;
   this.collisionCooldown = 0;
   this.score = 0;
+  this.power = 0;
+  this.maxPower = 100;
   
   this.update = function() {
     
@@ -488,18 +491,18 @@ function Player() {
   
   this.display = function() {
     
+    // This SHOULD NOT be necessary
+    // Display should never be called if it is dead
     if(this.health < 1) {
       return;
     }
     
+    // I think perhaps this should be somewhere external
     this.basicBullets.forEach(function(bullet) {
       bullet.draw();
     });
     
-    if(this.collisionCooldown > 0) {
-      this.collisionCooldown--;
-    }
-    
+    // Update location
     this.location.add(this.velocity);
     
     if(this.location.x < 0) {
@@ -514,6 +517,8 @@ function Player() {
     if(this.location.y > HEIGHT) {
       this.location.y = 0;
     }
+    
+    
     
     // Draw the sprite like this: https://p5js.org/reference/#/p5.Vector/fromAngle
     
@@ -561,6 +566,7 @@ function Player() {
       fill(0, 0, 255);
     }
     
+    // Make this relative to player size
     triangle(-8, -12, -8, 12, 20, 0);
     
     ellipse(0, 0, 10, 10);
@@ -582,6 +588,15 @@ function Player() {
     stroke(0, 0, 0);
     fill(255, 255, 255);
     
+    // Update logic
+    
+    if(this.collisionCooldown > 0) {
+      this.collisionCooldown--;
+    }
+    
+    if(this.power < this.maxPower) {
+      this.power++;
+    }
   }
   
   this.detectCollisions = function(otherShip) {
