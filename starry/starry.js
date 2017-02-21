@@ -29,7 +29,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = true;
+  DISPLAY_DEBUG = false;
 
 function preload() {
   lastMouseX = mouseX;
@@ -381,9 +381,15 @@ function GameState() {
     
     this.setStateGameOver = function(player) {
       this.state = "gameover";
+      this.continueCountdown = 30;
+      
+      // Remove all bullets
+      player1.basicBullets = [];
+      player2.basicBullets = [];
+      
       // Reset that player
-      player.health = player.totalHealth;
-      player.velocity = createVector();
+      //player.velocity = createVector(0, 0);
+      //player.location = createVector(23,23);
       player.location = player.defaultLocation;
       if(player == player1) {
         console.log("Player 2 wins this round");
@@ -392,16 +398,24 @@ function GameState() {
         console.log("Player 1 wins this round");
         player2.score++;
       }
-      this.setStateContinue();
+      console.log("Player lost, here is player: " + player.location, player.velocity);
+      // REstore player
+      player.health = player.totalHealth;
     }
     
-    this.setStateContinue = function() {
+    this.setStateContinue = function(player) {
       // Fade in now
-      if(player1.health < 1) {
-        player1.health = player1.totalHealth;
-      } else {
-        player2.health = player2.totalHealth;
-      }
+      
+      // I shouldn't have to do this! Something else is changing the values first!
+      player1.velocity = createVector(0, 0);
+      player2.velocity = createVector(0, 0);
+      //player1.location = createVector(50, 50);
+      player1.location = createVector(player1.defaultX, player2.defaultY);
+      player2.location = createVector(player2.defaultX, player2.defaultY);
+      console.log("Now that we're continuing, here is player1" + player1.location, player1.velocity);
+      console.log("Now that we're continuing, here is player2" + player2.location, player2.velocity);
+      
+      
       console.log("Continuing now");
       this.setStatePlay();
     }
@@ -411,6 +425,12 @@ function GameState() {
         
         // Display players
         
+        // Wait until countdown to start new match
+        //console.log("Continue countdown: " + this.continueCountdown);
+        if(this.continueCountdown < 1) {
+          this.setStateContinue();
+        }
+        this.continueCountdown--;
         
       }
       if(this.state == "play") {
@@ -446,7 +466,8 @@ function Player() {
   this.height = 30;
   this.angle = 0;
   this.velocity = createVector(0, 0).limit(1);
-  this.location = createVector(WIDTH / 2, HEIGHT / 2);
+  this.defaultLocation = createVector(WIDTH / 2, HEIGHT / 2);
+  this.location = this.defaultLocation;
   this.basicBullets = [];
   this.totalHealth = 50;
   this.health = this.totalHealth;
@@ -648,7 +669,7 @@ function Player() {
 function BasicBullet(player) {
   this.width = 20;
   this.height = 20;
-  this.damage = 12;
+  this.damage = 20;
   
   // Reference to player that we fired from
   this.parent = player;
