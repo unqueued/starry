@@ -560,12 +560,24 @@ function Player() {
     } else {
       fill(0, 0, 255);
     }
-    ellipse(0, 0, 10, 10);
     
+    triangle(-8, -12, -8, 12, 20, 0);
+    
+    ellipse(0, 0, 10, 10);
     stroke(255, 0, 0);
     line(0, 0, 10, 0);
     
+    fill(255, 255, 255);
+    
     pop();
+    
+    // Health bar
+    stroke(255, 255, 255);
+    rect(this.location.x - 10, this.location.y - 20, 20, 5);
+    stroke(0, 0, 0);
+    fill(0, 255, 0);
+    //rect(this.location.x - 10, this.location.y - 20, 20, 5);
+    rect(this.location.x - 10, this.location.y - 20, map(this.health, 0, this.totalHealth, 0, 20), 5);
     
     stroke(0, 0, 0);
     fill(255, 255, 255);
