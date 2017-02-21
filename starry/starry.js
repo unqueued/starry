@@ -5,6 +5,9 @@ TODO:
 [ ] Stop doing game logic within draw functions
 [ ] Garbage collection can be complicated. Be sure you're actually removing projectiles.
 
+[ ] For the asynchronous stuff (like waiting between the gameover and continue states, maybe use callbacks)
+May also want to use callbacks for other stuff, as well.
+I think this would be much better if it were async more.
 */
 
 var gameState;
@@ -123,7 +126,7 @@ function displayPanel() {
   t.push("Player 1");
   t.push("Score: " + player1.score);
   t.push("Health: " + player1.health);
-  t.push("Power: ");
+  t.push("Power: " + player1.power);
   fill(238, 154, 0);
   text(t.join("\n"), 10, HEIGHT + 20);
   
@@ -137,7 +140,7 @@ function displayPanel() {
   t.push("Player 2");
   t.push("Score: " + player2.score);
   t.push("Health: " + player2.health);
-  //t.push("Weapon alignment:");
+  t.push("Weapon alignment:" + player2.power);
   fill(0, 0, 255);
   text(t.join("\n"), WIDTH - 250 + 10, HEIGHT + 20);
   
@@ -271,6 +274,14 @@ function handleInput() {
   }
   if(keyIsDown(83)) {
     player2.retro();
+  }
+  if(keyIsDown(72)) {
+    //console.log("Raising sheilds");
+    player2.raiseSheilds();
+  } else {
+  //if(keyIsUp(72)) {
+    //console.log("Lowering sheilds");
+    player2.lowerSheilds();
   }
   
   if(keyIsDown(82)) {
@@ -487,6 +498,7 @@ function Player() {
   this.score = 0;
   this.power = 0;
   this.maxPower = 100;
+  this.sheildIsUp = false;
   
   this.update = function() {
     
@@ -555,6 +567,16 @@ function Player() {
       text(s, this.location.x, this.location.y);
     }
     
+    // Draw sheilds
+    if(this.sheildIsUp) {
+      stroke(255);
+      fill(0);
+      ellipse(this.location.x, this.location.y, this.width + 10);
+    }
+    
+    fill(255);
+    stroke(0);
+    
     push();
     
     translate(this.location.x, this.location.y);
@@ -582,11 +604,11 @@ function Player() {
     
     // Health bar
     stroke(255, 255, 255);
-    rect(this.location.x - 10, this.location.y - 20, 20, 5);
+    rect(this.location.x - 20, this.location.y - 30, 40, 8);
     stroke(0, 0, 0);
     fill(0, 255, 0);
     //rect(this.location.x - 10, this.location.y - 20, 20, 5);
-    rect(this.location.x - 10, this.location.y - 20, map(this.health, 0, this.totalHealth, 0, 20), 5);
+    rect(this.location.x - 20, this.location.y - 30, map(this.health, 0, this.totalHealth, 0, 40), 8);
     
     stroke(0, 0, 0);
     fill(255, 255, 255);
@@ -597,13 +619,43 @@ function Player() {
       this.collisionCooldown--;
     }
     
-    if(this.power < this.maxPower) {
+    if(this.power < this.maxPower && !this.sheildIsUp) {
       this.power++;
     }
   }
   
+  // Behavior here:
+  // If sheilds < 10 power, sheilds drop
+  // If sheilds are not up, they must be > 50 before can be raise
+  // If sheilds are still up <50, they will be lowered at <10
+  
+  this.raiseSheilds = function() {
+    if(!this.sheildIsUp && this.power < 50) {
+      console.log("Sheild raising denied, must have >50 power level");
+      this.power--;
+      return;
+    }
+    
+    if(this.power < 10) {
+      console.log("Sheild failed due to low power");
+      this.lowerSheilds();
+      return;
+    }
+    
+    this.sheildIsUp = true;
+    //this.power--;
+    if(this.power > 0) {
+      this.power--;
+    }
+  }
+  
+  this.lowerSheilds = function() {
+    this.sheildIsUp = false;
+  }
+  
   this.detectCollisions = function(otherShip) {
     
+    // VERY MESSY
     if(otherShip.health < 1) {
       //return;
     }
