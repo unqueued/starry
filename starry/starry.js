@@ -12,6 +12,9 @@ var gameState;
 var player1;
 var player2;
 
+var explosionImage;
+var explosions = [];
+
 var panelWidth = window.innerWidth
 var panelHeight = 90;
 
@@ -30,6 +33,12 @@ var
 
 function preload() {
   lastMouseX = mouseX;
+  
+  /*
+  explosionImage = loadImage("assets/explode.gif",
+  function() {},
+  function(e) {console.log("Error loading image because: " + e);});
+  */
 }
 
 function setup() {
@@ -44,6 +53,9 @@ function setup() {
   player2.location.x = player2.defaultX;
   
   gameState = new GameState();
+  
+  explosionImage = loadGif("assets/explode.gif");
+  imageMode(CENTER);
   
 }
 
@@ -63,6 +75,8 @@ function draw() {
   
   displayPanel();
   
+  displayExplosions();
+  
   // Collision detection is gonna be there for now, but will be moved into Player objects later
   //var hit = collideRectRect(player1.location.x - 20, player1.location.y - 20, 40, 40,
     //player2.location.x - 20, player2.location.y - 20, 40, 40);
@@ -71,6 +85,13 @@ function draw() {
   //  console.log("Collision detected");
   //}
   
+}
+
+function displayExplosions() {
+  explosions.forEach(function(explosion) {
+    explosion.draw();
+  });
+  //console.log(explosions);
 }
 
 function displayPanel() {
@@ -104,6 +125,27 @@ function displayPanel() {
   t.push("Weapon alignment:");
   fill(0, 0, 255);
   text(t.join("\n"), WIDTH - 150 + 10, HEIGHT + 20);
+  
+}
+
+function explosionAnimation(x, y) {
+  console.log("instantiated as" + x, y);
+  this.x = x;
+  this.y = y;
+  this.frame = 0;
+  if(explosionImage.loaded()) {
+    //gif.pause();
+  }
+  console.log("this.x " + this.x);
+  
+  draw = function() {
+    if(explosionImage.loaded()) {
+      image(explosionImage, this.x, this.y);
+      console.log("Drawing " + this.x, this.y, this.frame);
+      //if(this.frame)
+    }
+  }
+  
   
 }
 
@@ -224,12 +266,17 @@ function handleInput() {
 
 function mouseClicked() {
   //console.log("Bullet list:");
-  player1.basicBullets.forEach(function(bullet) {
+  //player1.basicBullets.forEach(function(bullet) {
     //console.log(bullet);
-  });
-  console.log("Dumping relevant game state data:");
-  console.log(player1);
-  console.log(player2);
+  //});
+  //image(explosionImage, mouseX, mouseY);
+  //console.log("Dumping relevant game state data:");
+  //console.log(player1);
+  //console.log(player2)
+  
+  console.log("Making new explosion at: " + mouseX, mouseY);
+  
+  explosions.push(new explosionAnimation(mouseX, mouseY));
 }
 
 // I'm using this fuction to capture key presses because they are naturally limited by the OS
