@@ -29,7 +29,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = false;
+  DISPLAY_DEBUG = true;
 
 function preload() {
   lastMouseX = mouseX;
@@ -396,11 +396,11 @@ function GameState() {
         player2.score++;
       } else {
         console.log("Player 1 wins this round");
-        player2.score++;
+        player1.score++;
       }
       console.log("Player lost, here is player: " + player.location, player.velocity);
       // REstore player
-      player.health = player.totalHealth;
+      //player.health = player.totalHealth;
     }
     
     this.setStateContinue = function(player) {
@@ -412,10 +412,11 @@ function GameState() {
       //player1.location = createVector(50, 50);
       player1.location = createVector(player1.defaultX, player2.defaultY);
       player2.location = createVector(player2.defaultX, player2.defaultY);
-      console.log("Now that we're continuing, here is player1" + player1.location, player1.velocity);
-      console.log("Now that we're continuing, here is player2" + player2.location, player2.velocity);
+      //console.log("Now that we're continuing, here is player1" + player1.location, player1.velocity);
+      //console.log("Now that we're continuing, here is player2" + player2.location, player2.velocity);
       
-      
+      player1.health = 50;
+      player2.health = 50;
       console.log("Continuing now");
       this.setStatePlay();
     }
@@ -432,6 +433,11 @@ function GameState() {
         }
         this.continueCountdown--;
         
+        if(player1.health < 1) {
+          text("Player2 wins!", WIDTH / 2, HEIGHT / 2);
+        } else {
+          text("Player1 wins!", WIDTH / 2, HEIGHT / 2);
+        }
       }
       if(this.state == "play") {
         player1.display();
@@ -482,13 +488,13 @@ function Player() {
   
   this.display = function() {
     
-    this.basicBullets.forEach(function(bullet) {
-      bullet.draw();
-    });
-    
     if(this.health < 1) {
       return;
     }
+    
+    this.basicBullets.forEach(function(bullet) {
+      bullet.draw();
+    });
     
     if(this.collisionCooldown > 0) {
       this.collisionCooldown--;
@@ -569,7 +575,7 @@ function Player() {
   this.detectCollisions = function(otherShip) {
     
     if(otherShip.health < 1) {
-      return;
+      //return;
     }
     
     // Detect other ship collisions
