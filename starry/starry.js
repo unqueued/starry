@@ -15,6 +15,8 @@ var player2;
 var panelWidth = window.innerWidth
 var panelHeight = 90;
 
+var rotateSpeed = 5;
+
 var
   lastMouseX = 0;
   WIDTH = window.innerWidth,
@@ -152,10 +154,10 @@ function handleInput() {
   
   // Player 1
   if(keyIsDown(LEFT_ARROW)) {
-    player1.angle -= 10;
+    player1.angle -= rotateSpeed;
   }
   if(keyIsDown(RIGHT_ARROW)) {
-    player1.angle += 10;
+    player1.angle += rotateSpeed;
   }
   if(keyIsDown(UP_ARROW)) {
     player1.thrust();
@@ -454,6 +456,11 @@ function Player() {
     bulletVelocity.div(2);
     
     this.velocity.add(bulletVelocity);
+    // Impose a speed limit, for sanity's sake
+    // TODO use p5.Vector.limit() instead probably...
+    if(this.velocity.mag() > 2) {
+      this.velocity.setMag(2);
+    }
   }
   
   this.fire = function() {
