@@ -285,12 +285,17 @@ function Player() {
   this.health = 100;
   this.defaultX;
   this.defaultY;
+  this.collisionCooldown = 0;
   
   this.update = function() {
     
   }
   
   this.display = function() {
+    
+    if(this.collisionCooldown > 0) {
+      this.collisionCooldown--;
+    }
     
     this.location.add(this.velocity);
     
@@ -331,7 +336,10 @@ function Player() {
     }
     
     // Display health stats
-    text(this.health, this.location.x, this.location.y);
+    //text(this.health, this.location.x, this.location.y);
+    s = this.velocity + "\n";
+    s = s + this.collisionCooldown;
+    text(s, this.location.x, this.location.y);
     
     push();
     
@@ -369,8 +377,20 @@ function Player() {
       this.location.x, this.location.y, 20,
       otherShip.location.x, otherShip.location.y, 20
       );
+    if(this.collisionCooldown > 0) {
+      hit = false;
+    }
     if(hit) {
-      console.log("Ship to ship collision");
+      // Do collision
+      tmpOtherShipVelocity = otherShip.velocity.copy();
+      otherShip.velocity.x = this.velocity.x;
+      otherShip.velocity.y = this.velocity.y;
+      this.velocity.x = tmpOtherShipVelocity.x;
+      this.velocity.y = tmpOtherShipVelocity.y;
+
+      otherShip.collisionCooldown = 50;
+      this.collisionCooldown = 50;
+      
     }
     
     // Detect bullet collisions
