@@ -537,8 +537,6 @@ function BasicBullet(player) {
     
     // Purge bullet if it has existed too long
     if(--this.ttl < 0) {
-      //console.log(this + " died");
-      //console.log("Removing: " + this.parent.basicBullets.indexOf(this));
       this.parent.basicBullets.splice(this.parent.basicBullets.indexOf(this), 1);
     }
     
@@ -572,10 +570,18 @@ function BasicBullet(player) {
     push();
     translate(this.location.x, this.location.y);
     rotate(radians(this.angle));
+    
+    /*
     ellipse(0, 0, 5);
     stroke(0, 255, 0);
     line(0, 0, this.width, 0);
     line(0, 0, 0, this.height);
+    */
+    
+    // Will probably end up going with this
+    stroke(255, 255, 255);
+    fill(255, 0, 0);
+    ellipse(0, 0, 5);
     
     pop();
     
