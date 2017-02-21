@@ -29,7 +29,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = false;
+  DISPLAY_DEBUG = true;
 
 function preload() {
   lastMouseX = mouseX;
@@ -91,7 +91,16 @@ function displayExplosions() {
   explosions.forEach(function(explosion) {
     explosion.draw();
   });
-  //console.log(explosions);
+  if(explosions.length > 0) {
+    for(var i = 0; i < explosions.length; i++) {
+      if(explosions[i] != null) {
+        if(explosions[i].done) {
+          //console.log("Culling exlposion animation at frame: " + i);
+          explosions.splice(i, 1);
+        }
+      }
+    }
+  }
 }
 
 function displayPanel() {
@@ -129,20 +138,28 @@ function displayPanel() {
 }
 
 function explosionAnimation(x, y) {
-  console.log("instantiated as" + x, y);
   this.x = x;
   this.y = y;
   this.frame = 0;
-  if(explosionImage.loaded()) {
-    //gif.pause();
-  }
-  console.log("this.x " + this.x);
-  
-  draw = function() {
+  //this.explosionImage = loadGif("assets/explode.gif");
+  this.done = false;
+//  if(explosionImage.loaded()) {
+//    this.explosionImage = explosionImage.copy();
+//    this.explosionImage.pause();
+//  }
+
+  this.draw = function() {
     if(explosionImage.loaded()) {
-      image(explosionImage, this.x, this.y);
-      console.log("Drawing " + this.x, this.y, this.frame);
-      //if(this.frame)
+      //image(this.explosionImage, this.x, this.y, 30, 30);
+      //console.log(this.frame + " " + this.explosionImage.totalFrames());
+      if(this.frame < explosionImage.totalFrames() - 1) {
+        explosionImage.frame(parseInt(this.frame));
+        image(explosionImage, this.x, this.y, 30, 30);
+        this.frame += 0.33;
+      } else {
+        //console.log("We're done here");
+        this.done = true;
+      }
     }
   }
   
@@ -180,6 +197,7 @@ function displayDebug() {
   debugDisplay.push("Player1 Velocity: " + player1.velocity);
   debugDisplay.push("Player2 Location: " + player2.location);
   debugDisplay.push("Player2 Velocity: " + player2.velocity);
+  debugDisplay.push(explosions);
 
   fill(255, 255, 255);
   text(debugDisplay.join("\n"), 10, 10);
