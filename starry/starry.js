@@ -113,30 +113,33 @@ function displayPanel() {
   rect(0, HEIGHT, panelWidth, panelHeight);
   
   // TODO just make this a function (or not, perfect is the enemy of good...)
+  
   // Display player 1
   //fill(0, 255, 0);
   fill(128, 128, 128);
   stroke(0, 0, 0);
-  rect(0, HEIGHT, 150, panelHeight);
+  rect(0, HEIGHT, 250, panelHeight);
   var t = [];
   t.push("Player 1");
   t.push("Score: " + player1.score);
   t.push("Health: " + player1.health);
-  //t.push("Power :");
+  t.push("Power: ");
   fill(238, 154, 0);
   text(t.join("\n"), 10, HEIGHT + 20);
+  
+  
 
   // Display player 2
   fill(128, 128, 128);
   stroke(0, 0, 0);
-  rect(WIDTH - 150, HEIGHT, 150, panelHeight);
+  rect(WIDTH - 250, HEIGHT, 250, panelHeight);
   var t = [];
   t.push("Player 2");
   t.push("Score: " + player2.score);
   t.push("Health: " + player2.health);
   //t.push("Weapon alignment:");
   fill(0, 0, 255);
-  text(t.join("\n"), WIDTH - 150 + 10, HEIGHT + 20);
+  text(t.join("\n"), WIDTH - 250 + 10, HEIGHT + 20);
   
 }
 
