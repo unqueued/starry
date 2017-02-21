@@ -502,6 +502,11 @@ function BasicBullet(player) {
   this.angle = player.angle; // This is probably redundant and I can get it from v
   // Then, add onto that
   var v = p5.Vector.fromAngle(radians(player.angle));
+  // Just have a zero vector, to make it easier
+  //v = createVector();
+  
+  console.log("Just launched projectile with velocity: " + v);
+  
   v.mult(3);
   this.velocity.add(v);
   
@@ -552,12 +557,12 @@ function BasicBullet(player) {
     // Show velocity
     text(this.velocity, this.location.x, this.location.y);
     
-    this.velocity.mult(1.05);
+    //this.velocity.mult(1.05);
         // Impose a speed limit, for sanity's sake
     // TODO use p5.Vector.limit() instead probably...
-    if(this.velocity.mag() > 2) {
+    //if(this.velocity.mag() > 2) {
       //this.velocity.setMag(2);
-    }
+    //}
     
   }
 }
