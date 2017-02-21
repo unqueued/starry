@@ -23,7 +23,8 @@ var
 
 // Debug flags
 var
-  DISPLAY_HITBOX = false;
+  DISPLAY_HITBOX = false,
+  DISPLAY_DEBUG = false;
 
 function preload() {
   lastMouseX = mouseX;
@@ -95,10 +96,14 @@ function displayDebug() {
   //text(debugInfoPlayer2, 10, 100);
   */
   
+  if(!DISPLAY_DEBUG) {
+    return;
+  }
+  
   var debugDisplay = [];
   
-  debugDisplay.push("player1 projectiles: " + player1.basicBullets);
-  debugDisplay.push("player2 projectiles: " + player2.basicBullets);
+  //debugDisplay.push("player1 projectiles: " + player1.basicBullets[0].velocity);
+  //debugDisplay.push("player2 projectiles: " + player2.basicBullets[0].velocity);
   debugDisplay.push("GameState: " + gameState.state);
   debugDisplay.push("Player1 Location: " + player1.location);
   debugDisplay.push("Player1 Velocity: " + player1.velocity);
@@ -328,15 +333,12 @@ function Player() {
       this.location.x = WIDTH;
     }
     if(this.location.y < 0) {
-      console.log("Crossing HEIGHT = " + HEIGHT + " as opposed to window.innerHeight:" + window.innerHeight);
       this.location.y = HEIGHT;
-      console.log(this.location.y);
     }
     if(this.location.x > WIDTH) {
       this.location.x = 0;
     }
     if(this.location.y > HEIGHT) {
-      console.log("Setting y location to: " + HEIGHT);
       this.location.y = 0;
     }
     
@@ -363,12 +365,14 @@ function Player() {
       fill(255, 255, 255);
     }
     
-    // Display health stats
-    //text(this.health, this.location.x, this.location.y);
-    s = this.velocity + "\n";
-    s = s + this.collisionCooldown + "\n";
-    s = s + this.location + "\n";
-    text(s, this.location.x, this.location.y);
+    if(DISPLAY_DEBUG) {
+      // Display health stats
+      //text(this.health, this.location.x, this.location.y);
+      s = this.velocity + "\n";
+      s = s + this.collisionCooldown + "\n";
+      s = s + this.location + "\n";
+      text(s, this.location.x, this.location.y);
+    }
     
     push();
     
@@ -494,10 +498,11 @@ function BasicBullet(player) {
   // Reference to player that we fired from
   this.parent = player;
   
-  this.ttl = 90;
+  this.ttl = 150;
   
   // First, match the player
   this.location = player.location.copy();
+  //this.velocity = createVector();
   this.velocity = player.velocity.copy();
   this.angle = player.angle; // This is probably redundant and I can get it from v
   // Then, add onto that
@@ -505,11 +510,18 @@ function BasicBullet(player) {
   // Just have a zero vector, to make it easier
   //v = createVector();
   
-  console.log("Just launched projectile with velocity: " + v);
   
   v.mult(3);
+
   this.velocity.add(v);
-  
+  // Have a minimum velocity. If our ship's velocity would make our projectile's velocity
+  // too low, then just use the velocity as if the ship were still
+  if(this.velocity.mag() < 2) {
+    console.log("Adjusted magnitude");
+    //this.velocity.setMag(2);
+    this.velocity = v.copy();
+  }
+
   this.draw = function() {
     
     // Purge bullet if it has existed too long
@@ -518,6 +530,7 @@ function BasicBullet(player) {
       //console.log("Removing: " + this.parent.basicBullets.indexOf(this));
       this.parent.basicBullets.splice(this.parent.basicBullets.indexOf(this), 1);
     }
+    
     
     this.location.add(this.velocity);
     
@@ -554,8 +567,11 @@ function BasicBullet(player) {
     line(0, 0, 0, 10);
     pop();
     
-    // Show velocity
-    text(this.velocity, this.location.x, this.location.y);
+    if(DISPLAY_DEBUG) {
+      console.log(DISPLAY_DEBUG);
+      // Show velocity
+      text(this.velocity, this.location.x, this.location.y);
+    }
     
     //this.velocity.mult(1.05);
         // Impose a speed limit, for sanity's sake
