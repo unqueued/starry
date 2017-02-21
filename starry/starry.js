@@ -29,7 +29,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = false;
+  DISPLAY_DEBUG = true;
 
 function preload() {
   lastMouseX = mouseX;
@@ -48,6 +48,9 @@ function setup() {
   
   player1.defaultX = WIDTH / 3;
   player2.defaultX = WIDTH * 2/3;
+  
+  player1.defaultY = HEIGHT / 2;
+  player2.defaultY = HEIGHT / 2;
   
   player1.location.x = player1.defaultX;
   player2.location.x = player2.defaultX;
@@ -69,7 +72,7 @@ function draw() {
   
   gameState.display();
   
-  detectCollisions();
+  //detectCollisions();
   
   displayDebug();
   
@@ -120,7 +123,7 @@ function displayPanel() {
   t.push("Score: " + player1.score);
   t.push("Health: " + player1.health);
   t.push("Weapon alignment:");
-  fill(0, 255, 0);
+  fill(238, 154, 0);
   text(t.join("\n"), 10, HEIGHT + 20);
 
   // Display player 2
@@ -348,6 +351,7 @@ function GameState() {
     this.state = "attract";
     this.player1Start = false;
     this.player2Start = false;
+    this.continueCountdown = 0;
     
     this.setPlayer1Start = function() {
       console.log("Player 1 ready");
@@ -375,10 +379,44 @@ function GameState() {
       this.state = "play";
     }
     
+    this.setStateGameOver = function(player) {
+      this.state = "gameover";
+      // Reset that player
+      player.health = player.totalHealth;
+      player.velocity = createVector();
+      player.location = player.defaultLocation;
+      if(player == player1) {
+        console.log("Player 2 wins this round");
+        player2.score++;
+      } else {
+        console.log("Player 1 wins this round");
+        player2.score++;
+      }
+      this.setStateContinue();
+    }
+    
+    this.setStateContinue = function() {
+      // Fade in now
+      if(player1.health < 1) {
+        player1.health = player1.totalHealth;
+      } else {
+        player2.health = player2.totalHealth;
+      }
+      console.log("Continuing now");
+      this.setStatePlay();
+    }
+    
     this.display = function() {
+      if(this.state == "gameover") {
+        
+        // Display players
+        
+        
+      }
       if(this.state == "play") {
         player1.display();
         player2.display();
+        detectCollisions();
       }
       if(this.state == "attract") {
         s = 
@@ -410,7 +448,8 @@ function Player() {
   this.velocity = createVector(0, 0).limit(1);
   this.location = createVector(WIDTH / 2, HEIGHT / 2);
   this.basicBullets = [];
-  this.health = 100;
+  this.totalHealth = 50;
+  this.health = this.totalHealth;
   this.defaultX;
   this.defaultY;
   this.collisionCooldown = 0;
@@ -421,6 +460,14 @@ function Player() {
   }
   
   this.display = function() {
+    
+    this.basicBullets.forEach(function(bullet) {
+      bullet.draw();
+    });
+    
+    if(this.health < 1) {
+      return;
+    }
     
     if(this.collisionCooldown > 0) {
       this.collisionCooldown--;
@@ -482,7 +529,7 @@ function Player() {
     
     // Differentiate color based on which player we are
     if(this == player1) {
-      fill(0, 255, 0);
+      fill(238, 133, 0);
     } else {
       fill(0, 0, 255);
     }
@@ -496,13 +543,13 @@ function Player() {
     stroke(0, 0, 0);
     fill(255, 255, 255);
     
-    this.basicBullets.forEach(function(bullet) {
-      bullet.draw();
-    });
-    
   }
   
   this.detectCollisions = function(otherShip) {
+    
+    if(otherShip.health < 1) {
+      return;
+    }
     
     // Detect other ship collisions
     var hit = collideCircleCircle(
@@ -546,6 +593,8 @@ function Player() {
     this.health -= bullet.damage;
     if(this.health < 0) {
       this.health = 0;
+      explosions.push(new explosionAnimation(bullet.location.x, bullet.location.y));
+      gameState.setStateGameOver(this);
     }
     explosions.push(new explosionAnimation(bullet.location.x, bullet.location.y));
     //console.log("Making explosion at :" + bullet.location.x, bullet.location.y);
@@ -623,7 +672,7 @@ function BasicBullet(player) {
   // Have a minimum velocity. If our ship's velocity would make our projectile's velocity
   // too low, then just use the velocity as if the ship were still
   if(this.velocity.mag() < 2) {
-    console.log("Adjusted magnitude");
+    //console.log("Adjusted magnitude");
     //this.velocity.setMag(2);
     this.velocity = v.copy();
   }
@@ -681,7 +730,7 @@ function BasicBullet(player) {
     pop();
     
     if(DISPLAY_DEBUG) {
-      console.log(DISPLAY_DEBUG);
+      //console.log(DISPLAY_DEBUG);
       // Show velocity
       text(this.velocity, this.location.x, this.location.y);
     }
