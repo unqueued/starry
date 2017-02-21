@@ -144,7 +144,7 @@ function displayPanel() {
   fill(0, 0, 255);
   text(t.join("\n"), WIDTH - 250 + 10, HEIGHT + 20);
   
-  arc(50, 50, 80, 80, 0, PI+QUARTER_PI, PIE);
+  arc(WIDTH - 80, HEIGHT + 20, 80, 80, 0, /*PI+QUARTER_PI*/ map(player2.power, 0, 100, 0, 2*PI), PIE);
 }
 
 // I could make a few variations of this, or, at least, let me specify a gif to use
