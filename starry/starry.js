@@ -97,13 +97,14 @@ function displayDebug() {
   
   var debugDisplay = [];
   
-  debugDisplay.push("HEIGHT: " + HEIGHT + " window.innerHeight: " + window.innerHeight);
   debugDisplay.push("player1 projectiles: " + player1.basicBullets);
   debugDisplay.push("player2 projectiles: " + player2.basicBullets);
   debugDisplay.push("GameState: " + gameState.state);
-  debugDisplay.push("Player1: " + player1.location);
-  debugDisplay.push("Player2: " + player2.location);
-  
+  debugDisplay.push("Player1 Location: " + player1.location);
+  debugDisplay.push("Player1 Velocity: " + player1.velocity);
+  debugDisplay.push("Player2 Location: " + player2.location);
+  debugDisplay.push("Player2 Velocity: " + player2.velocity);
+
   fill(255, 255, 255);
   text(debugDisplay.join("\n"), 10, 10);
   
@@ -154,6 +155,9 @@ function handleInput() {
   if(keyIsDown(UP_ARROW)) {
     player1.thrust();
   }
+  if(keyIsDown(DOWN_ARROW)) {
+    player1.retro();
+  }
   
   if(keyIsDown(65)) {
     player2.angle -= 10;
@@ -163,6 +167,9 @@ function handleInput() {
   }
   if(keyIsDown(87)) {
     player2.thrust();
+  }
+  if(keyIsDown(83)) {
+    player2.retro();
   }
   
   if(keyIsDown(82)) {
@@ -467,6 +474,15 @@ function Player() {
     }
     
     this.velocity.add(v);
+  }
+  
+  this.retro = function() {
+    var v = p5.Vector.fromAngle(radians(this.angle));
+    v.div(48);
+    if(this.velocity.mag() < -2) {
+      this.velocity.setMag(-2);
+    }
+    this.velocity.sub(v);
   }
 }
 
