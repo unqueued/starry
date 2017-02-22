@@ -54,11 +54,11 @@ function setup() {
   player1 = new Player();
   player2 = new Player();
   
-  player1.defaultX = WIDTH / 3;
-  player2.defaultX = WIDTH * 2/3;
+  player1.defaultLocation.x = WIDTH / 3;
+  player2.defaultLocation.y = WIDTH * 2/3;
   
-  player1.defaultY = HEIGHT / 2;
-  player2.defaultY = HEIGHT / 2;
+  player1.defaultLocation.x = HEIGHT / 2;
+  player2.defaultLocation.y = HEIGHT / 2;
   
   player1.location.x = player1.defaultX;
   player2.location.x = player2.defaultX;
@@ -293,7 +293,6 @@ function keyPressed() {
 
 function mouseMoved() {
     if(gameState.state == "play") {
-      //console.log(mouseX, lastMouseX);
       if(lastMouseX < mouseX) {
         player1.angle += 10;
       }
@@ -364,32 +363,11 @@ function GameState() {
         player1.score++;
       }
       console.log("Player lost, here is player: " + player.location, player.velocity);
-      // REstore player
-      //player.health = player.totalHealth;
-    }
-    
-    this.setStateContinue = function(player) {
-      // Fade in now
-      
-      // I shouldn't have to do this! Something else is changing the values first!
-      player1.velocity = createVector(0, 0);
-      player2.velocity = createVector(0, 0);
-      //player1.location = createVector(50, 50);
-      player1.location = createVector(player1.defaultX, player2.defaultY);
-      player2.location = createVector(player2.defaultX, player2.defaultY);
-      //console.log("Now that we're continuing, here is player1" + player1.location, player1.velocity);
-      //console.log("Now that we're continuing, here is player2" + player2.location, player2.velocity);
-      
-      player1.health = 50;
-      player2.health = 50;
-      console.log("Continuing now");
-      this.setStatePlay();
     }
     
     this.display = function() {
+
       if(this.state == "gameover") {
-        
-        // Display players
         
         // Wait until countdown to start new match
         //console.log("Continue countdown: " + this.continueCountdown);
@@ -437,31 +415,21 @@ function Player() {
   this.height = 30;
   this.angle = 0;
   this.velocity = createVector(0, 0).limit(1);
-  this.defaultLocation = createVector(WIDTH / 2, HEIGHT / 2);
-  this.location = this.defaultLocation;
+  this.defaultLocation = createVector(0, 0);
+  this.location = createVector(0, 0);
   this.basicBullets = [];
   this.totalHealth = 50;
   this.health = this.totalHealth;
-  this.defaultX;
-  this.defaultY;
   this.collisionCooldown = 0;
   this.score = 0;
   this.power = 0;
   this.maxPower = 100;
   this.sheildIsUp = false;
-  
-  this.update = function() {
-    
-  }
+  this.enabled = true;
+  this.visible = true;
   
   this.display = function() {
-    
-    // This SHOULD NOT be necessary
-    // Display should never be called if it is dead
-    if(this.health < 1) {
-      return;
-    }
-    
+
     // I think perhaps this should be somewhere external
     this.basicBullets.forEach(function(bullet) {
       bullet.draw();
@@ -527,6 +495,7 @@ function Player() {
     fill(255);
     stroke(0);
     
+    // Display rotated ship sprite
     push();
     
     translate(this.location.x, this.location.y);
@@ -563,6 +532,7 @@ function Player() {
     stroke(0, 0, 0);
     fill(255, 255, 255);
     
+
     // Update logic
     
     if(this.collisionCooldown > 0) {
@@ -605,11 +575,6 @@ function Player() {
   
   this.detectCollisions = function(otherShip) {
     
-    // VERY MESSY
-    if(otherShip.health < 1) {
-      //return;
-    }
-    
     // Detect other ship collisions
     var hit = collideCircleCircle(
       this.location.x, this.location.y, this.width,
@@ -644,7 +609,6 @@ function Player() {
         }
       }
     }
-    
   }
   
   this.hit = function(bullet) {
@@ -654,6 +618,7 @@ function Player() {
       this.health = 0;
       explosions.push(new explosionAnimation(bullet.location.x, bullet.location.y));
       gameState.setStateGameOver(this);
+      return;
     }
     explosions.push(new explosionAnimation(bullet.location.x, bullet.location.y));
     //console.log("Making explosion at :" + bullet.location.x, bullet.location.y);
