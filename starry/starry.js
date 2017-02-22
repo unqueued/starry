@@ -43,7 +43,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = true;
+  DISPLAY_DEBUG = false;
 
 function preload() {
   lastMouseX = mouseX;
@@ -61,15 +61,13 @@ function setup() {
   player2.defaultLocation.y = HEIGHT / 2;
 
   // Put this inside the ship class
-  player1.location.x = player1.defaultLocation.x;
-  player1.location.y = player1.defaultLocation.y;
-
-  player2.location.x = player2.defaultLocation.x;
-  player2.location.y = player2.defaultLocation.y;
+  player1.resetLocation();
+  player2.resetLocation();
   
   gameState = new GameState();
   
-  explosionImage = loadGif("assets/explode.gif");
+  explosionImage = loadGif("https://raw.githubusercontent.com/unqueued/starry/master/starry/assets/explode.gif");
+  //explosionImage = loadGif("assets/explode.gif");
   imageMode(CENTER);
   
 }
@@ -270,6 +268,8 @@ function mouseClicked() {
   console.log("Making new explosion at: " + mouseX, mouseY);
   
   explosions.push(new explosionAnimation(mouseX, mouseY));
+
+  // Should probably do a thing that dumps game state to console on click
 }
 
 function keyPressed() {
@@ -292,6 +292,9 @@ function keyPressed() {
     if(keyCode == 50) {
       gameState.setPlayer2Start();
     }
+  }
+  if(keyCode == 48) {
+    DISPLAY_DEBUG = !DISPLAY_DEBUG;
   }
 }
 
@@ -411,6 +414,13 @@ function GameState() {
     }
     
 }
+
+
+/*
+
+PLAYER CLASS
+
+*/
 
 function Player() {
   this.x = 0;
@@ -548,11 +558,16 @@ function Player() {
     }
   }
   
+  this.resetLocation = function() {
+    this.location.x = this.defaultLocation.x;
+    this.location.y = this.defaultLocation.y;
+  }
+
   // Behavior here:
   // If sheilds < 10 power, sheilds drop
   // If sheilds are not up, they must be > 50 before can be raise
   // If sheilds are still up <50, they will be lowered at <10
-  
+
   this.raiseSheilds = function() {
     if(!this.sheildIsUp && this.power < 50) {
       console.log("Sheild raising denied, must have >50 power level");
@@ -640,9 +655,6 @@ function Player() {
   }
   
   this.fire = function() {
-    //console.log(this.location);
-    // New projective inherits velocity from player
-    //this.basicBullets.push(new BasicBullet(this.location, this.velocity));
     this.basicBullets.push(new BasicBullet(this));
   }
   
