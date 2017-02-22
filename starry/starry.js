@@ -47,12 +47,6 @@ var
 
 function preload() {
   lastMouseX = mouseX;
-  
-  /*
-  explosionImage = loadImage("assets/explode.gif",
-  function() {},
-  function(e) {console.log("Error loading image because: " + e);});
-  */
 }
 
 function setup() {
@@ -79,28 +73,17 @@ function setup() {
 function draw() {
   background(0, 0, 0);
   fill(255, 255, 255);
-  //stroke(255, 255, 255);
   stroke(0, 0, 0);
   
   handleInput();
   
   gameState.display();
-  
-  //detectCollisions();
-  
+    
   displayDebug();
   
   displayPanel();
   
   displayExplosions();
-  
-  // Collision detection is gonna be there for now, but will be moved into Player objects later
-  //var hit = collideRectRect(player1.location.x - 20, player1.location.y - 20, 40, 40,
-    //player2.location.x - 20, player2.location.y - 20, 40, 40);
-  //var hit = collideCircleCircle(player1.location.x, player1.location.y, 20, player2.location.x, player2.location.y, 20);
-  //if(hit) {
-  //  console.log("Collision detected");
-  //}
   
 }
 
@@ -112,7 +95,6 @@ function displayExplosions() {
     for(var i = 0; i < explosions.length; i++) {
       if(explosions[i] != null) {
         if(explosions[i].done) {
-          //console.log("Culling exlposion animation at frame: " + i);
           explosions.splice(i, 1);
         }
       }
@@ -122,14 +104,11 @@ function displayExplosions() {
 
 function displayPanel() {
   fill(128, 128, 128);
-  //color(255, 255, 255);
-  //stroke(255, 255, 255);
   rect(0, HEIGHT, panelWidth, panelHeight);
   
   // TODO just make this a function (or not, perfect is the enemy of good...)
   
   // Display player 1
-  //fill(0, 255, 0);
   fill(128, 128, 128);
   stroke(0, 0, 0);
   rect(0, HEIGHT, 250, panelHeight);
@@ -163,48 +142,23 @@ function explosionAnimation(x, y) {
   this.x = x;
   this.y = y;
   this.frame = 0;
-  //this.explosionImage = loadGif("assets/explode.gif");
   this.done = false;
-//  if(explosionImage.loaded()) {
-//    this.explosionImage = explosionImage.copy();
-//    this.explosionImage.pause();
-//  }
+
 
   this.draw = function() {
     if(explosionImage.loaded()) {
-      //image(this.explosionImage, this.x, this.y, 30, 30);
-      //console.log(this.frame + " " + this.explosionImage.totalFrames());
       if(this.frame < explosionImage.totalFrames() - 1) {
         explosionImage.frame(parseInt(this.frame));
         image(explosionImage, this.x, this.y, 30, 30);
         this.frame += 0.33;
       } else {
-        //console.log("We're done here");
         this.done = true;
       }
     }
   }
-  
-  
 }
 
 function displayDebug() {
-  /*
-  
-  var debugInfoPlayer1 = 
-    "player1.angle:\n" + nfc(radians(player1.angle), 1, 1) + " (" + nfc(player1.angle, 1, 1) +"\xB0)" +
-    "\nVelocity: \n" + player1.velocity +
-    "\nMagnitude: " + player1.velocity.mag();
-  
-  debugInfoPlayer1 += 
-    "player2.angle:\n" + nfc(radians(player2.angle), 1, 1) + " (" + nfc(player2.angle, 1, 1) +"\xB0)" +
-    "\nVelocity: \n" + player2.velocity +
-    "\nMagnitude: " + player2.velocity.mag();
-  
-  fill(255, 255, 255);
-  text(debugInfoPlayer1, 10, 10);
-  //text(debugInfoPlayer2, 10, 100);
-  */
   
   if(!DISPLAY_DEBUG) {
     return;
@@ -288,11 +242,8 @@ function handleInput() {
     player2.retro();
   }
   if(keyIsDown(72)) {
-    //console.log("Raising sheilds");
     player2.raiseSheilds();
   } else {
-  //if(keyIsUp(72)) {
-    //console.log("Lowering sheilds");
     player2.lowerSheilds();
   }
   
@@ -308,26 +259,15 @@ function handleInput() {
     player2.velocity.y = 0;
     player2.location.x = player2.defaultX;
     player2.location.y = HEIGHT / 2;
-    //console.log("Reset player angles");
   }
 }
 
 function mouseClicked() {
-  //console.log("Bullet list:");
-  //player1.basicBullets.forEach(function(bullet) {
-    //console.log(bullet);
-  //});
-  //image(explosionImage, mouseX, mouseY);
-  //console.log("Dumping relevant game state data:");
-  //console.log(player1);
-  //console.log(player2)
-  
   console.log("Making new explosion at: " + mouseX, mouseY);
   
   explosions.push(new explosionAnimation(mouseX, mouseY));
 }
 
-// I'm using this fuction to capture key presses because they are naturally limited by the OS
 function keyPressed() {
   if(gameState.state == "play") {
     if(keyCode == 32) {
@@ -415,8 +355,6 @@ function GameState() {
       player2.basicBullets = [];
       
       // Reset that player
-      //player.velocity = createVector(0, 0);
-      //player.location = createVector(23,23);
       player.location = player.defaultLocation;
       if(player == player1) {
         console.log("Player 2 wins this round");
@@ -836,32 +774,12 @@ function BasicBullet(player) {
     translate(this.location.x, this.location.y);
     rotate(radians(this.angle));
     
-    /*
-    ellipse(0, 0, 5);
-    stroke(0, 255, 0);
-    line(0, 0, this.width, 0);
-    line(0, 0, 0, this.height);
-    */
-    
     // Will probably end up going with this
     stroke(255, 255, 255);
     fill(255, 0, 0);
     ellipse(0, 0, 5);
     
     pop();
-    
-    if(DISPLAY_DEBUG) {
-      //console.log(DISPLAY_DEBUG);
-      // Show velocity
-      text(this.velocity, this.location.x, this.location.y);
-    }
-    
-    //this.velocity.mult(1.05);
-        // Impose a speed limit, for sanity's sake
-    // TODO use p5.Vector.limit() instead probably...
-    //if(this.velocity.mag() > 2) {
-      //this.velocity.setMag(2);
-    //}
     
   }
 }
