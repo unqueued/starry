@@ -43,7 +43,7 @@ var
 // Debug flags
 var
   DISPLAY_HITBOX = false,
-  DISPLAY_DEBUG = false;
+  DISPLAY_DEBUG = true;
 
 function preload() {
   lastMouseX = mouseX;
@@ -53,15 +53,19 @@ function setup() {
   createCanvas(WIDTH, HEIGHT + panelHeight);
   player1 = new Player();
   player2 = new Player();
-  
+
   player1.defaultLocation.x = WIDTH / 3;
-  player2.defaultLocation.y = WIDTH * 2/3;
-  
-  player1.defaultLocation.x = HEIGHT / 2;
+  player1.defaultLocation.y = HEIGHT / 2;
+
+  player2.defaultLocation.x = WIDTH * 2/3;
   player2.defaultLocation.y = HEIGHT / 2;
-  
-  player1.location.x = player1.defaultX;
-  player2.location.x = player2.defaultX;
+
+  // Put this inside the ship class
+  player1.location.x = player1.defaultLocation.x;
+  player1.location.y = player1.defaultLocation.y;
+
+  player2.location.x = player2.defaultLocation.x;
+  player2.location.y = player2.defaultLocation.y;
   
   gameState = new GameState();
   
