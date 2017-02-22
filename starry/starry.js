@@ -22,6 +22,7 @@ http://javascript.info/tutorial/settimeout-setinterval
 [ ] Implement sheilds for both players
 [x] Implement health bars
 [ ] Maybe enable display of ships in win screen
+[ ] Remap directionals
 
 */
 
@@ -289,15 +290,11 @@ function mouseClicked() {
 
 function keyPressed() {
   if(gameState.state == "play") {
-    if(keyCode == 32) {
+    if(keyCode == 32 || keyCode == 73) {
       player1.fire();
     }
-    if(keyCode == 86) {
+    if(keyCode == 86 || keyCode == 76) {
       player2.fire();
-    }
-    if(keyCode == 83) {
-      player1.velocity.setMag(0);
-      player2.velocity.setMag(0);
     }
   }
   if(gameState.state == "attract") {
@@ -446,10 +443,8 @@ function GameState() {
       }
     }
     
-
     this.setStateContinue = function() {
       console.log("Continuing...");
-
     }
 }
 
@@ -479,6 +474,7 @@ function Player() {
   this.sheildIsUp = false;
   this.enabled = true;
   this.visible = true;
+  this.damage = 40;
   
   this.display = function() {
 
@@ -611,29 +607,36 @@ function Player() {
   this.resetLocation = function() {
     this.location.x = this.defaultLocation.x;
     this.location.y = this.defaultLocation.y;
+    this.velocity = createVector(0, 0);
   }
   // Behavior for sheilds:
   // If sheilds < 10 power, sheilds drop
   // If sheilds are not up, they must be > 50 before can be raise
   // If sheilds are still up <50, they will be lowered at <10
 
-  this.raiseSheilds = function() {
+  this.raiseSheilds = function(val = 1) {
+    // This is messy asf, so fix it later
     if(!this.sheildIsUp && this.power < 50) {
       console.log("Sheild raising denied, must have >50 power level");
-      this.power--;
+      this.power -= val;
+      if(this.power < 1) {
+        this.power = 1;
+      }
       return;
     }
-    
-    if(this.power < 10) {
-      console.log("Sheild failed due to low power");
+
+    if(this.power < 2) {
+      //console.log("Sheild failed due to low power");
       this.lowerSheilds();
+      this.power -= 1;
       return;
     }
-    
+    //console.log("Default behavior");
+
     this.sheildIsUp = true;
     //this.power--;
-    if(this.power > 0) {
-      this.power--;
+    if(this.power > 1) {
+      this.power -= 1;
     }
   }
   
@@ -661,8 +664,14 @@ function Player() {
 
       otherShip.collisionCooldown = 50;
       this.collisionCooldown = 50;
-      
+    // Now, assign damage
+    // REDUNDANT and can be optimized by making a function to handle all damage
+    // OR, actually, I can just make the ship object have the same properites as
+    // a bullet
+    otherShip.hit(this);
     }
+
+
     
     // Detect bullet collisions
     if(this.basicBullets.length > 0) {
@@ -681,7 +690,13 @@ function Player() {
   
   this.hit = function(bullet) {
     // Deduct damage from bullet, but just hard code value for now
-    this.health -= bullet.damage;
+    if(!this.sheildIsUp) {
+      this.health -= bullet.damage;
+      console.log(bullet.hit);
+      if(bullet.hit) {
+        console.log("Object has a hit method");
+      }
+    }
     //console.log("Checking health: " + this.health);
     if(this.health < 1) {
       this.health = 0;
@@ -693,8 +708,8 @@ function Player() {
     explosions.push(new explosionAnimation(bullet.location.x, bullet.location.y));
     //console.log("Making explosion at :" + bullet.location.x, bullet.location.y);
     
-    // Get pushed by torpedo
-    var bulletVelocity = bullet.velocity;
+    // Get pushed by bullet
+    var bulletVelocity = bullet.velocity.copy();
     bulletVelocity.div(2);
     
     this.velocity.add(bulletVelocity);
@@ -711,6 +726,8 @@ function Player() {
   
   this.thrust = function() {
     
+    console.log("thrust");
+
     var v = p5.Vector.fromAngle(radians(this.angle));
     
     // Slow the acceleration
@@ -727,10 +744,11 @@ function Player() {
   }
   
   this.retro = function() {
+
     var v = p5.Vector.fromAngle(radians(this.angle));
     v.div(48);
     if(this.velocity.mag() < -2) {
-      this.velocity.setMag(-2);
+      //this.velocity.setMag(-2);
     }
     this.velocity.sub(v);
   }
