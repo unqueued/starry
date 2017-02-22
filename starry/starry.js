@@ -18,6 +18,10 @@ https://github.com/processing/p5.js/wiki/p5.js,-node.js,-socket.io
 http://ability.nyu.edu/p5.js-speech/
 https://forum.processing.org/two/discussion/9707/creating-threads-in-processing
 http://javascript.info/tutorial/settimeout-setinterval
+[ ] Implement turboboost
+[ ] Implement sheilds for both players
+[x] Implement health bars
+[ ] Maybe enable display of ships in win screen
 
 */
 
@@ -33,6 +37,8 @@ var panelWidth = window.innerWidth
 var panelHeight = 90;
 
 var rotateSpeed = 5;
+
+var totalHealth = 100;
 
 var
   lastMouseX = 0;
@@ -216,7 +222,11 @@ function detectCollisions() {
 }
 
 function handleInput() {
-  
+
+  if(gameState.state != "play") {
+    return;
+  }
+
   // Player 1
   if(keyIsDown(LEFT_ARROW)) {
     player1.angle -= rotateSpeed;
@@ -247,6 +257,11 @@ function handleInput() {
     player2.raiseSheilds();
   } else {
     player2.lowerSheilds();
+  }
+  if(keyIsDown(89)) {
+    player1.raiseSheilds();
+  } else {
+    player1.lowerSheilds();
   }
   
   if(keyIsDown(82)) {
@@ -341,24 +356,29 @@ function GameState() {
         this.setStatePlay();
       }
     }
-    
+
     this.setStateAttract = function() {
       this.state = "attract";
       this.player1Start = false;
       this.player2Start = false;
     }
+
+    this.testFunc = function() {
+
+    }
     
     this.setStatePlay = function() {
+      player1.resetAll();
+      player2.resetAll();
+
+      console.log(this.state);
       this.state = "play";
+      console.log(this.state);
     }
     
     this.setStateGameOver = function(player) {
       this.state = "gameover";
-      this.continueCountdown = 30;
-      
-      // Remove all bullets
-      player1.basicBullets = [];
-      player2.basicBullets = [];
+      //this.continueCountdown = 30;
       
       // Reset that player
       player.location = player.defaultLocation;
@@ -370,6 +390,15 @@ function GameState() {
         player1.score++;
       }
       console.log("Player lost, here is player: " + player.location, player.velocity);
+
+      // This is quite messy.
+      var self = this;
+      setTimeout(
+        function() {
+        self.state = "attract";
+        self.player1Start = false;
+        self.player2Start = false;        
+      }, 1000);
     }
     
     this.display = function() {
@@ -378,22 +407,28 @@ function GameState() {
         
         // Wait until countdown to start new match
         //console.log("Continue countdown: " + this.continueCountdown);
-        if(this.continueCountdown < 1) {
-          this.setStateContinue();
-        }
-        this.continueCountdown--;
+        //if(this.continueCountdown < 1) {
+        //  this.setStateContinue();
+        //}
+        //this.continueCountdown--;
         
         if(player1.health < 1) {
           text("Player2 wins!", WIDTH / 2, HEIGHT / 2);
         } else {
           text("Player1 wins!", WIDTH / 2, HEIGHT / 2);
         }
+
+        // Maybe remove this
+        //player1.display();
+        //player2.display();
       }
+
       if(this.state == "play") {
         player1.display();
         player2.display();
         detectCollisions();
       }
+
       if(this.state == "attract") {
         s = 
         "Players press start to begin\n";
@@ -407,12 +442,15 @@ function GameState() {
         } else {
           s = s.concat("Player 2 Press start\n");
         }
-        
-        
         text(s, WIDTH / 2, HEIGHT / 2);
       }
     }
     
+
+    this.setStateContinue = function() {
+      console.log("Continuing...");
+
+    }
 }
 
 
@@ -432,7 +470,7 @@ function Player() {
   this.defaultLocation = createVector(0, 0);
   this.location = createVector(0, 0);
   this.basicBullets = [];
-  this.totalHealth = 50;
+  this.totalHealth = totalHealth;
   this.health = this.totalHealth;
   this.collisionCooldown = 0;
   this.score = 0;
@@ -443,6 +481,13 @@ function Player() {
   this.visible = true;
   
   this.display = function() {
+
+    // I shouldn't have to disable this, but I will
+    // Execution should never reach here once I change the game state
+    if(!this.enabled) {
+      console.log("!!!! This should never be executed!");
+      return;
+    }
 
     // I think perhaps this should be somewhere external
     this.basicBullets.forEach(function(bullet) {
@@ -464,8 +509,6 @@ function Player() {
     if(this.location.y > HEIGHT) {
       this.location.y = 0;
     }
-    
-    
     
     // Draw the sprite like this: https://p5js.org/reference/#/p5.Vector/fromAngle
     
@@ -558,12 +601,18 @@ function Player() {
     }
   }
   
+  this.resetAll = function() {
+    this.health = this.totalHealth;
+    this.resetLocation();
+    this.enabled = true;
+    this.basicBullets = [];
+  }
+
   this.resetLocation = function() {
     this.location.x = this.defaultLocation.x;
     this.location.y = this.defaultLocation.y;
   }
-
-  // Behavior here:
+  // Behavior for sheilds:
   // If sheilds < 10 power, sheilds drop
   // If sheilds are not up, they must be > 50 before can be raise
   // If sheilds are still up <50, they will be lowered at <10
@@ -633,8 +682,10 @@ function Player() {
   this.hit = function(bullet) {
     // Deduct damage from bullet, but just hard code value for now
     this.health -= bullet.damage;
-    if(this.health < 0) {
+    //console.log("Checking health: " + this.health);
+    if(this.health < 1) {
       this.health = 0;
+      this.enabled = false;
       explosions.push(new explosionAnimation(bullet.location.x, bullet.location.y));
       gameState.setStateGameOver(this);
       return;
