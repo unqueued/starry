@@ -415,9 +415,9 @@ function GameState() {
       player1.resetAll();
       player2.resetAll();
 
-      console.log(this.state);
+      //console.log(this.state);
       this.state = "play";
-      console.log(this.state);
+      //console.log(this.state);
     }
     
     this.setStateGameOver = function(player) {
@@ -425,7 +425,7 @@ function GameState() {
       //this.continueCountdown = 30;
       
       // Reset that player
-      player.location = player.defaultLocation;
+      player.location = player.defaultLocation.copy();
       if(player == player1) {
         console.log("Player 2 wins this round");
         player2.score++;
@@ -433,7 +433,7 @@ function GameState() {
         console.log("Player 1 wins this round");
         player1.score++;
       }
-      console.log("Player lost, here is player: " + player.location, player.velocity);
+      //console.log("Player lost, here is player: " + player.location, player.velocity);
 
       // This is quite messy.
       var self = this;
