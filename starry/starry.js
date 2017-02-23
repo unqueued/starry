@@ -241,46 +241,50 @@ function handleInput() {
   }
 
   // Player 1
-  if(keyIsDown(LEFT_ARROW)) {
-    player1.angle -= rotateSpeed;
-  }
-  if(keyIsDown(RIGHT_ARROW)) {
-    player1.angle += rotateSpeed;
-  }
-  if(keyIsDown(UP_ARROW)) {
-    player1.thrust();
-  }
-  if(keyIsDown(DOWN_ARROW)) {
-    player1.retro();
+  if(player1.inputEnabled) {
+    if(keyIsDown(LEFT_ARROW)) {
+      player1.angle -= rotateSpeed;
+    }
+    if(keyIsDown(RIGHT_ARROW)) {
+      player1.angle += rotateSpeed;
+    }
+    if(keyIsDown(UP_ARROW)) {
+      player1.thrust();
+    }
+    if(keyIsDown(DOWN_ARROW)) {
+      player1.retro();
+    }
+    if(keyIsDown(80)) {
+      player1.engageBoost();
+    }
+    if(keyIsDown(89)) {
+      player1.raiseSheilds();
+    } else {
+      player1.lowerSheilds();
+    }
   }
   
-  if(keyIsDown(65)) {
-    player2.angle -= 10;
-  }
-  if(keyIsDown(68)) {
-    player2.angle += 10;
-  }
-  if(keyIsDown(87)) {
-    player2.thrust();
-  }
-  if(keyIsDown(83)) {
-    player2.retro();
-  }
-  if(keyIsDown(72)) {
-    player2.raiseSheilds();
-  } else {
-    player2.lowerSheilds();
-  }
-  if(keyIsDown(89)) {
-    player1.raiseSheilds();
-  } else {
-    player1.lowerSheilds();
-  }
-  if(keyIsDown(80)) {
-    player1.engageBoost();
-  }
-  if(keyIsDown(71)) {
-    player2.engageBoost();
+  if(player2.inputEnabled) {
+    if(keyIsDown(65)) {
+      player2.angle -= 10;
+    }
+    if(keyIsDown(68)) {
+      player2.angle += 10;
+    }
+    if(keyIsDown(87)) {
+      player2.thrust();
+    }
+    if(keyIsDown(83)) {
+      player2.retro();
+    }
+    if(keyIsDown(72)) {
+      player2.raiseSheilds();
+    } else {
+      player2.lowerSheilds();
+    }
+    if(keyIsDown(71)) {
+      player2.engageBoost();
+    }
   }
   
   if(keyIsDown(82)) {
@@ -479,6 +483,7 @@ function Player() {
   this.width = 30;
   this.height = 30;
   this.angle = 0;
+  this.speedLimit = 2;
   this.velocity = createVector(0, 0).limit(1);
   this.defaultLocation = createVector(0, 0);
   this.location = createVector(0, 0);
@@ -497,8 +502,9 @@ function Player() {
   this.boostChargeID;
   this.boostMessage = "";
   this.boostReady = true;
-  this.speedLimit = true;
+  //this.speedLimit = true;
   this.boostPower = 100;
+  this.inputEnabled = true;
   
   this.display = function() {
 
@@ -651,6 +657,11 @@ function Player() {
     }
 
   }
+
+  this.startBoost = function() {
+    // Disable inputs, set a timer, and do a thrust
+
+  }
   
   this.resetAll = function() {
     this.health = this.totalHealth;
@@ -788,7 +799,7 @@ function Player() {
     this.basicBullets.push(new BasicBullet(this));
   }
   
-  this.thrust = function() {
+  this.thrust = function(speedLimit = false) {
     
     console.log("thrust");
 
@@ -800,8 +811,8 @@ function Player() {
     
     // Impose a speed limit, for sanity's sake
     // TODO use p5.Vector.limit() instead probably...
-    if(this.velocity.mag() > 2) {
-      this.velocity.setMag(2);
+    if(this.velocity.mag() > this.speedLimit) {
+      this.velocity.setMag(this.speedLimit);
     }
     
     this.velocity.add(v);
