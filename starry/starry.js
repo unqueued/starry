@@ -588,11 +588,16 @@ function GameState() {
         //}
         //this.continueCountdown--;
         
+        textAlign(CENTER, CENTER);
+        textSize(19);
+
         if(player1.health < 1) {
           text("Player2 wins!", WIDTH / 2, HEIGHT / 2);
         } else {
           text("Player1 wins!", WIDTH / 2, HEIGHT / 2);
         }
+        textSize(12);
+        textAlign(LEFT, TOP);
 
         // Maybe remove this
         //player1.display();
