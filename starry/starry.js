@@ -133,12 +133,21 @@ function displayPanel() {
   fill(238, 154, 0);
   text(t.join("\n"), playerPanelMarginX, HEIGHT + playerPanelMarginY);
   // Sheild
-  arc(140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player1.power, 0, 100, 0, 2*PI), PIE);
-  text(player1.sheildMessage, 200, HEIGHT + 40);
-
+  //arc(140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player1.power, 0, 100, 0, 2*PI), PIE);
+  text(player1.sheildMessage, playerPanelWidth - 270, HEIGHT + playerPanelMarginY);
+  fill(255);
+  rect(playerPanelWidth - 270, HEIGHT + playerPanelMarginY+15, map(player1.power, 0, 100, 0, 70), 20);
+  fill(238, 154, 0);
+  // Boost
   text(
     "Boost status: " + player1.boostMessage + " " + player1.boostPower + "%",
-    playerPanelWidth - 50, HEIGHT + playerPanelMarginY);
+    playerPanelWidth - 140, HEIGHT + playerPanelMarginY
+  );
+  fill(255);
+  rect(
+    playerPanelWidth - 140, HEIGHT + playerPanelMarginY+15, map(player1.boostPower, 0, 100, 0, 70), 20
+    );
+  fill(238, 154, 0);
 
   // Display player 2
   fill(128, 128, 128);
@@ -152,10 +161,22 @@ function displayPanel() {
   fill(0, 0, 255);
   text(t.join("\n"), WIDTH - playerPanelWidth + playerPanelMarginX, HEIGHT + playerPanelMarginY);
   // Sheild
-  arc(WIDTH - playerPanelWidth + 140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player2.power, 0, 100, 0, 2*PI), PIE);
-  //text(player2.sheildMessage, HEIGHT + 40, WIDTH - playerPanelWidth + 200);
-  //text(player1.sheildMessage, WIDTH - panelWidth + 200, HEIGHT + 40);
-  text(player2.sheildMessage, WIDTH - playerPanelWidth + 200, HEIGHT + 40);
+  //arc(WIDTH - playerPanelWidth + 140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player2.power, 0, 100, 0, 2*PI), PIE);
+  text(player2.sheildMessage, WIDTH - 270, HEIGHT + playerPanelMarginY);
+  fill(255);
+  rect(WIDTH - 270, HEIGHT + playerPanelMarginY+15, map(player2.power, 0, 100, 0, 70), 20);
+  fill(0, 0, 255);
+  //rect(this.location.x - 20, this.location.y - 30, map(this.health, 0, this.totalHealth, 0, 40), 8);
+  // Boost
+  text(
+    "Boost status: " + player2.boostMessage + " " + player1.boostPower + "%",
+    WIDTH - 140, HEIGHT + playerPanelMarginY
+  );
+  fill(255);
+  rect(
+    WIDTH - 140, HEIGHT + playerPanelMarginY+15, map(player2.boostPower, 0, 100, 0, 70), 20
+    );
+  fill(0, 0, 255);
 }
 
 // I could make a few variations of this, or, at least, let me specify a gif to use
@@ -234,12 +255,13 @@ function detectCollisions() {
   
 }
 
+// TODO: enable sheilds even when controls disabled
+
 function handleInput() {
 
   if(gameState.state != "play") {
     return;
   }
-
   // Player 1
   if(player1.inputEnabled) {
     if(keyIsDown(LEFT_ARROW)) {
