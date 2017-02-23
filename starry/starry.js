@@ -633,24 +633,10 @@ function Player() {
     if(this.boostReady) {
       // Increase velocity and suspend speed limit
       console.log("Boost!");
-      this.boostReady = false;
-      this.boostPower = 0;
+      //this.boostReady = false;
+      //this.boostPower = 0;
 
-      var self = this;
-
-      this.boostChargeID = setInterval(
-        function() {
-          //console.log(self);
-          if(self.boostPower < 100) {
-            self.boostPower++;
-          } else {
-            console.log("Boost power charging complete");
-            clearInterval(self.boostChargeID);
-            self.boostReady = true;
-          }
-          //console.log("Boost power: " + self.boostPower);
-        }, 30
-        );
+      this.startBoost();
     } else {
       console.log("Can't boost, charging");
       //this.boostMessage = "Charging";
@@ -660,7 +646,50 @@ function Player() {
 
   this.startBoost = function() {
     // Disable inputs, set a timer, and do a thrust
+    this.inputEnabled = false;
+    this.boostReady = false;
+    this.boostPower = 0;
 
+    console.log("Boost started!");
+
+    console.log(this.velocity);
+    var v = p5.Vector.fromAngle(radians(this.angle));
+    v.mult(3);
+    this.velocity.add(v);
+    console.log(this.velocity);
+
+
+    var self = this;
+    setTimeout(
+      function() {
+        console.log("Boost completed");
+        self.stopBoost();
+      }, 300);
+  }
+
+  this.stopBoost = function() {
+    this.inputEnabled = true;
+
+    // Re impose speed limit
+    if(this.velocity.mag() > this.speedLimit) {
+      this.velocity.setMag(this.speedLimit);
+    }
+
+    // Engage recharge timer
+    var self = this;
+    this.boostChargeID = setInterval(
+      function() {
+        //console.log(self);
+        if(self.boostPower < 100) {
+          self.boostPower++;
+        } else {
+          console.log("Boost power charging complete");
+          clearInterval(self.boostChargeID);
+          self.boostReady = true;
+        }
+        //console.log("Boost power: " + self.boostPower);
+      }, 20
+      );
   }
   
   this.resetAll = function() {
