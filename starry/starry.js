@@ -128,26 +128,74 @@ function displayPanel() {
   var t = [];
   t.push("Player 1");
   t.push("Score: " + player1.score);
-  t.push("Health: " + player1.health);
-  t.push("Power: " + player1.power);
   fill(238, 154, 0);
+  textSize(20);
   text(t.join("\n"), playerPanelMarginX, HEIGHT + playerPanelMarginY);
   // Sheild
   //arc(140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player1.power, 0, 100, 0, 2*PI), PIE);
-  text(player1.sheildMessage, playerPanelWidth - 270, HEIGHT + playerPanelMarginY);
+  //text(player1.sheildMessage, playerPanelWidth - 270, HEIGHT + playerPanelMarginY);
+  textSize(15);
+  text(player1.sheildMessage,
+    (playerPanelWidth / 100) * 25,
+    HEIGHT + playerPanelMarginY
+    );
   fill(255);
-  rect(playerPanelWidth - 270, HEIGHT + playerPanelMarginY+15, map(player1.power, 0, 100, 0, 70), 20);
+  rect(
+    (playerPanelWidth / 100) * 25,
+    HEIGHT + 40,
+    (playerPanelWidth / 100) * 30,
+    30
+    );
+  fill(238, 154, 0);
+  rect(
+    (playerPanelWidth / 100) * 25,
+    HEIGHT + 40,
+    map(player1.power, 0, 100, 0, (playerPanelWidth / 100) * 30),
+    30
+    );
+  fill(255);
+  /*
+  rect(
+    (playerPanelWidth / 100) * 30,
+    HEIGHT + playerPanelMarginY+15,
+    map(player1.power, 0, 100, 0, 70),
+    20
+    );
+*/
+  textSize(12);
   fill(238, 154, 0);
   // Boost
+  textSize(15);
   text(
     "Boost status: " + player1.boostMessage + " " + player1.boostPower + "%",
-    playerPanelWidth - 140, HEIGHT + playerPanelMarginY
+    //playerPanelWidth - 140,
+    playerPanelWidth - (playerPanelWidth / 100) * 35,
+    HEIGHT + playerPanelMarginY
   );
   fill(255);
   rect(
-    playerPanelWidth - 140, HEIGHT + playerPanelMarginY+15, map(player1.boostPower, 0, 100, 0, 70), 20
+    playerPanelWidth - (playerPanelWidth / 100) * 35,
+    HEIGHT + 40,
+    (playerPanelWidth / 100) * 30,
+    30
     );
   fill(238, 154, 0);
+  rect(
+    playerPanelWidth - (playerPanelWidth / 100) * 35,
+    HEIGHT + 40,
+    map(player1.boostPower, 0, 100, 0, (playerPanelWidth / 100) * 30),
+    30
+    );
+  /*
+  rect(
+    playerPanelWidth - 140, HEIGHT + playerPanelMarginY+15, map(player1.boostPower, 0, 100, 0, 70), 20
+    );
+  rect(playerPanelWidth - 270, HEIGHT + playerPanelMarginY+15, map(player1.power, 0, 100, 0, 70), 20);
+  */
+  //fill(238, 154, 0);
+  fill(255);
+  textSize(12);
+  fill(255);
 
   // Display player 2
   fill(128, 128, 128);
@@ -156,12 +204,79 @@ function displayPanel() {
   var t = [];
   t.push("Player 2");
   t.push("Score: " + player2.score);
-  t.push("Health: " + player2.health);
-  t.push("Power:" + player2.power);
   fill(0, 0, 255);
-  text(t.join("\n"), WIDTH - playerPanelWidth + playerPanelMarginX, HEIGHT + playerPanelMarginY);
+  textSize(20);
+  text(t.join("\n"), (WIDTH - playerPanelWidth) + playerPanelMarginX, HEIGHT + playerPanelMarginY);
   // Sheild
-  //arc(WIDTH - playerPanelWidth + 140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player2.power, 0, 100, 0, 2*PI), PIE);
+  //arc(140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player1.power, 0, 100, 0, 2*PI), PIE);
+  //text(player1.sheildMessage, playerPanelWidth - 270, HEIGHT + playerPanelMarginY);
+  textSize(15);
+  text(player1.sheildMessage,
+    (WIDTH - playerPanelWidth) + (playerPanelWidth / 100) * 25,
+    HEIGHT + playerPanelMarginY
+    );
+  fill(255);
+  rect(
+    (WIDTH - playerPanelWidth) + (playerPanelWidth / 100) * 25,
+    HEIGHT + 40,
+    (playerPanelWidth / 100) * 30,
+    30
+    );
+  fill(0, 0, 255);
+  rect(
+    (WIDTH - playerPanelWidth) + (playerPanelWidth / 100) * 25,
+    HEIGHT + 40,
+    map(player1.power, 0, 100, 0, (playerPanelWidth / 100) * 30),
+    30
+    );
+
+  // Boost
+  textSize(15);
+  fill(0, 0, 255);
+  text(
+    "Boost status: " + player2.boostMessage + " " + player2.boostPower + "%",
+    //playerPanelWidth - 140,
+    panelWidth - (playerPanelWidth / 100) * 35,
+    HEIGHT + playerPanelMarginY
+  );
+  fill(255);
+  rect(
+    panelWidth - (playerPanelWidth / 100) * 35,
+    HEIGHT + 40,
+    (playerPanelWidth / 100) * 30,
+    30
+    );
+  fill(0, 0, 255);
+  rect(
+    panelWidth - (playerPanelWidth / 100) * 35,
+    HEIGHT + 40,
+    map(player2.boostPower, 0, 100, 0, (playerPanelWidth / 100) * 30),
+    30
+    );
+  /*
+  rect(
+    playerPanelWidth - 140, HEIGHT + playerPanelMarginY+15, map(player1.boostPower, 0, 100, 0, 70), 20
+    );
+  rect(playerPanelWidth - 270, HEIGHT + playerPanelMarginY+15, map(player1.power, 0, 100, 0, 70), 20);
+  */
+  //fill(238, 154, 0);
+  fill(255);
+  textSize(12);
+  fill(255);
+
+  /*
+  // OLD code
+  fill(128, 128, 128);
+  stroke(0, 0, 0);
+  rect(WIDTH - playerPanelWidth, HEIGHT, playerPanelWidth, panelHeight);
+  var t = [];
+  t.push("Player 2");
+  t.push("Score: " + player2.score);
+  fill(0, 0, 255);
+  textSize(20);
+  text(t.join("\n"), WIDTH - playerPanelWidth + playerPanelMarginX, HEIGHT + playerPanelMarginY);
+  textSize(12);
+  // Sheild
   text(player2.sheildMessage, WIDTH - 270, HEIGHT + playerPanelMarginY);
   fill(255);
   rect(WIDTH - 270, HEIGHT + playerPanelMarginY+15, map(player2.power, 0, 100, 0, 70), 20);
@@ -177,6 +292,7 @@ function displayPanel() {
     WIDTH - 140, HEIGHT + playerPanelMarginY+15, map(player2.boostPower, 0, 100, 0, 70), 20
     );
   fill(0, 0, 255);
+  */
 }
 
 // I could make a few variations of this, or, at least, let me specify a gif to use
@@ -470,6 +586,13 @@ function GameState() {
       if(this.state == "play") {
         player1.display();
         player2.display();
+
+        player1.stopBoost();
+        player2.stopBoost();
+
+        player1.sheild = 0;
+        player2.sheild = 0;
+
         detectCollisions();
       }
 
@@ -493,7 +616,6 @@ function GameState() {
 
         textAlign(LEFT, TOP);
         textSize(12);
-        
       }
     }
     
@@ -535,9 +657,9 @@ function Player() {
   this.boostMessage = "";
   this.boostReady = true;
   //this.speedLimit = true;
-  this.boostPower = 100;
+  this.boostPower = 0;
   this.inputEnabled = true;
-  
+
   this.display = function() {
 
     // I shouldn't have to disable this, but I will
@@ -774,7 +896,7 @@ function Player() {
   this.lowerSheilds = function() {
     this.sheildIsUp = false;
     if(this.power < 50) {
-      this.sheildMessage = "Sheilds: LOW POWER";
+      this.sheildMessage = "Sheilds: CHARGING";
     } else {
       this.sheildMessage = "Sheilds: READY";
     }
