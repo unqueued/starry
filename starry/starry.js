@@ -136,6 +136,10 @@ function displayPanel() {
   arc(140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player1.power, 0, 100, 0, 2*PI), PIE);
   text(player1.sheildMessage, 200, HEIGHT + 40);
 
+  text(
+    "Boost status: " + player1.boostMessage + " " + player1.boostPower + "%",
+    playerPanelWidth - 50, HEIGHT + playerPanelMarginY);
+
   // Display player 2
   fill(128, 128, 128);
   stroke(0, 0, 0);
@@ -271,6 +275,12 @@ function handleInput() {
     player1.raiseSheilds();
   } else {
     player1.lowerSheilds();
+  }
+  if(keyIsDown(80)) {
+    player1.engageBoost();
+  }
+  if(keyIsDown(71)) {
+    player2.engageBoost();
   }
   
   if(keyIsDown(82)) {
@@ -484,6 +494,11 @@ function Player() {
   this.visible = true;
   this.damage = 40;
   this.sheildMessage = "";
+  this.boostChargeID;
+  this.boostMessage = "";
+  this.boostReady = true;
+  this.speedLimit = true;
+  this.boostPower = 100;
   
   this.display = function() {
 
@@ -604,6 +619,37 @@ function Player() {
     if(this.power < this.maxPower && !this.sheildIsUp) {
       this.power++;
     }
+  }
+
+  this.engageBoost = function() {
+    // I'm going to try a different strategy with this type of charging
+    // mechanism, as oppposed to the sheild mechanism.
+    if(this.boostReady) {
+      // Increase velocity and suspend speed limit
+      console.log("Boost!");
+      this.boostReady = false;
+      this.boostPower = 0;
+
+      var self = this;
+
+      this.boostChargeID = setInterval(
+        function() {
+          //console.log(self);
+          if(self.boostPower < 100) {
+            self.boostPower++;
+          } else {
+            console.log("Boost power charging complete");
+            clearInterval(self.boostChargeID);
+            self.boostReady = true;
+          }
+          //console.log("Boost power: " + self.boostPower);
+        }, 30
+        );
+    } else {
+      console.log("Can't boost, charging");
+      //this.boostMessage = "Charging";
+    }
+
   }
   
   this.resetAll = function() {
