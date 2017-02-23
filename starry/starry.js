@@ -81,7 +81,7 @@ function setup() {
   //explosionImage = loadGif("assets/explode.gif");
   imageMode(CENTER);
   
-  backgroundImage = loadImage("assets/nebula.jpg",
+  backgroundImage = loadImage("assets/nebula1.jpg",
   function() {console.log("succeeded in loading");},
   function(e) {console.log("Failed to load because: "+e); } );
 
@@ -102,7 +102,7 @@ function draw() {
   
   displayExplosions();
 
-  image(background, 0, 0, WIDTH, HEIGHT);
+  image(backgroundImage, 0, 0, WIDTH, HEIGHT);
   
 }
 
