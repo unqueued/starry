@@ -291,10 +291,10 @@ function handleInput() {
   
   if(player2.inputEnabled) {
     if(keyIsDown(65)) {
-      player2.angle -= 10;
+      player2.angle -= rotateSpeed;
     }
     if(keyIsDown(68)) {
-      player2.angle += 10;
+      player2.angle += rotateSpeed;
     }
     if(keyIsDown(87)) {
       player2.thrust();
