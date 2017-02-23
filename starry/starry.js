@@ -1107,7 +1107,12 @@ function BasicBullet(player) {
     
     // Will probably end up going with this
     stroke(255, 255, 255);
-    fill(255, 0, 0);
+    if(this.parent == player1) {
+      fill(238, 133, 0);
+    } else {
+      fill(255, 0, 191);
+    }
+    //fill(255, 0, 0);
     ellipse(0, 0, 5);
     
     pop();
