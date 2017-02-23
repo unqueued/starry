@@ -18,11 +18,13 @@ https://github.com/processing/p5.js/wiki/p5.js,-node.js,-socket.io
 http://ability.nyu.edu/p5.js-speech/
 https://forum.processing.org/two/discussion/9707/creating-threads-in-processing
 http://javascript.info/tutorial/settimeout-setinterval
-[ ] Implement turboboost
-[ ] Implement sheilds for both players
+[x] Implement turboboost
+[x] Implement sheilds for both players
 [x] Implement health bars
-[ ] Maybe enable display of ships in win screen
-[ ] Remap directionals
+[ ] Straifing
+[ ] Make bigger
+[ ] Maybe have background
+[ ] Scale entire thing up
 
 */
 
@@ -40,6 +42,8 @@ var panelHeight = 90;
 var rotateSpeed = 5;
 
 var totalHealth = 100;
+
+var backgroundImage;
 
 var
   lastMouseX = 0;
@@ -77,6 +81,10 @@ function setup() {
   //explosionImage = loadGif("assets/explode.gif");
   imageMode(CENTER);
   
+  backgroundImage = loadImage("assets/nebula.jpg",
+  function() {console.log("succeeded in loading");},
+  function(e) {console.log("Failed to load because: "+e); } );
+
 }
 
 function draw() {
@@ -93,6 +101,8 @@ function draw() {
   displayPanel();
   
   displayExplosions();
+
+  image(background, 0, 0, WIDTH, HEIGHT);
   
 }
 
