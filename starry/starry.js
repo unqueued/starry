@@ -1033,7 +1033,7 @@ function BasicBullet(player) {
   //v = createVector();
   
   
-  v.mult(3);
+  v.mult(5);
 
   this.velocity.add(v);
   // Have a minimum velocity. If our ship's velocity would make our projectile's velocity
