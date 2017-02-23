@@ -81,7 +81,8 @@ function setup() {
   //explosionImage = loadGif("assets/explode.gif");
   imageMode(CENTER);
   
-  backgroundImage = loadImage("assets/nebula1.jpg",
+  //backgroundImage = loadImage("assets/nebula1.jpg",
+  backgroundImage = loadImage("https://raw.githubusercontent.com/unqueued/starry/master/starry/assets/nebula1.jpg",
   function() {console.log("succeeded in loading");},
   function(e) {console.log("Failed to load because: "+e); } );
 
@@ -91,6 +92,10 @@ function draw() {
   background(0, 0, 0);
   fill(255, 255, 255);
   stroke(0, 0, 0);
+
+  imageMode(CORNER);
+  image(backgroundImage, 0, 0, WIDTH, HEIGHT);
+  imageMode(CENTER);
   
   handleInput();
   
@@ -102,8 +107,6 @@ function draw() {
   
   displayExplosions();
 
-  image(backgroundImage, 0, 0, WIDTH, HEIGHT);
-  
 }
 
 function displayExplosions() {
