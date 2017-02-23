@@ -486,7 +486,14 @@ function GameState() {
         } else {
           s = s.concat("Player 2 Press start\n");
         }
+        
+        textSize(19);
+        textAlign(CENTER, CENTER);
         text(s, WIDTH / 2, HEIGHT / 2);
+
+        textAlign(LEFT, TOP);
+        textSize(12);
+        
       }
     }
     
