@@ -96,7 +96,7 @@ function draw() {
   stroke(0, 0, 0);
 
   imageMode(CORNER);
-  image(backgroundImage, 0, 0, WIDTH, HEIGHT);
+  image(backgroundImage, 0, 0, WIDTH, HEIGHT + panelHeight);
   imageMode(CENTER);
   
   handleInput();
@@ -132,14 +132,14 @@ function displayPanel() {
   var playerPanelMarginY = 20;
 
   fill(128, 128, 128);
-  rect(0, HEIGHT, panelWidth, panelHeight);
+  //rect(0, HEIGHT, panelWidth, panelHeight);
   
   // TODO just make this a function (or not, perfect is the enemy of good...)
   
   // Display player 1
   fill(128, 128, 128);
   stroke(0, 0, 0);
-  rect(0, HEIGHT, playerPanelWidth, panelHeight);
+  //rect(0, HEIGHT, playerPanelWidth, panelHeight);
   var t = [];
   t.push("Player 1");
   t.push("Score: " + player1.score);
@@ -215,11 +215,11 @@ function displayPanel() {
   // Display player 2
   fill(128, 128, 128);
   stroke(0, 0, 0);
-  rect(WIDTH - playerPanelWidth, HEIGHT, playerPanelWidth, panelHeight);
+  //rect(WIDTH - playerPanelWidth, HEIGHT, playerPanelWidth, panelHeight);
   var t = [];
   t.push("Player 2");
   t.push("Score: " + player2.score);
-  fill(0, 0, 255);
+  fill(255, 0, 191);
   textSize(20);
   text(t.join("\n"), (WIDTH - playerPanelWidth) + playerPanelMarginX, HEIGHT + playerPanelMarginY);
   // Sheild
@@ -237,7 +237,7 @@ function displayPanel() {
     (playerPanelWidth / 100) * 30,
     30
     );
-  fill(0, 0, 255);
+  fill(255, 0, 191);
   rect(
     (WIDTH - playerPanelWidth) + (playerPanelWidth / 100) * 25,
     HEIGHT + 40,
@@ -247,7 +247,7 @@ function displayPanel() {
 
   // Boost
   textSize(15);
-  fill(0, 0, 255);
+  fill(255, 0, 191);
   text(
     "Boost status: " + player2.boostMessage + " " + player2.boostPower + "%",
     //playerPanelWidth - 140,
@@ -261,7 +261,7 @@ function displayPanel() {
     (playerPanelWidth / 100) * 30,
     30
     );
-  fill(0, 0, 255);
+  fill(255, 0, 191);
   rect(
     panelWidth - (playerPanelWidth / 100) * 35,
     HEIGHT + 40,
@@ -389,7 +389,7 @@ function detectCollisions() {
 // TODO: enable sheilds even when controls disabled
 
 function handleInput() {
-  console.log(keyCode + "  pressed");
+  //console.log(keyCode + "  pressed");
 
   if(gameState.state != "play") {
     return;
@@ -760,7 +760,7 @@ function Player() {
     if(this == player1) {
       fill(238, 133, 0);
     } else {
-      fill(0, 0, 255);
+      fill(255, 0, 191);
     }
     
     // Make this relative to player size
