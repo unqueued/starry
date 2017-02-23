@@ -1110,7 +1110,7 @@ function BasicBullet(player) {
     if(this.parent == player1) {
       fill(238, 133, 0);
     } else {
-      fill(255, 0, 191);
+      fill(255, 0, 191);  
     }
     //fill(255, 0, 0);
     ellipse(0, 0, 5);
