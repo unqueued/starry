@@ -262,6 +262,9 @@ function handleInput() {
   if(gameState.state != "play") {
     return;
   }
+  // Disable all controls except for sheild, so that
+  // player can activate sheilds during a boost
+
   // Player 1
   if(player1.inputEnabled) {
     if(keyIsDown(LEFT_ARROW)) {
@@ -279,11 +282,11 @@ function handleInput() {
     if(keyIsDown(80)) {
       player1.engageBoost();
     }
-    if(keyIsDown(89)) {
-      player1.raiseSheilds();
-    } else {
-      player1.lowerSheilds();
-    }
+  }
+  if(keyIsDown(89)) {
+    player1.raiseSheilds();
+  } else {
+    player1.lowerSheilds();
   }
   
   if(player2.inputEnabled) {
@@ -299,14 +302,14 @@ function handleInput() {
     if(keyIsDown(83)) {
       player2.retro();
     }
-    if(keyIsDown(72)) {
-      player2.raiseSheilds();
-    } else {
-      player2.lowerSheilds();
-    }
     if(keyIsDown(71)) {
       player2.engageBoost();
     }
+  }
+  if(keyIsDown(72)) {
+    player2.raiseSheilds();
+  } else {
+    player2.lowerSheilds();
   }
   
   if(keyIsDown(82)) {
