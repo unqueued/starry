@@ -112,6 +112,10 @@ function displayExplosions() {
 }
 
 function displayPanel() {
+  var playerPanelWidth = 400; //250;
+  var playerPanelMarginX = 10;
+  var playerPanelMarginY = 20;
+
   fill(128, 128, 128);
   rect(0, HEIGHT, panelWidth, panelHeight);
   
@@ -120,30 +124,34 @@ function displayPanel() {
   // Display player 1
   fill(128, 128, 128);
   stroke(0, 0, 0);
-  rect(0, HEIGHT, 250, panelHeight);
+  rect(0, HEIGHT, playerPanelWidth, panelHeight);
   var t = [];
   t.push("Player 1");
   t.push("Score: " + player1.score);
   t.push("Health: " + player1.health);
   t.push("Power: " + player1.power);
   fill(238, 154, 0);
-  text(t.join("\n"), 10, HEIGHT + 20);
-  
-  
+  text(t.join("\n"), playerPanelMarginX, HEIGHT + playerPanelMarginY);
+  // Sheild
+  arc(140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player1.power, 0, 100, 0, 2*PI), PIE);
+  text(player1.sheildMessage, 200, HEIGHT + 40);
 
   // Display player 2
   fill(128, 128, 128);
   stroke(0, 0, 0);
-  rect(WIDTH - 250, HEIGHT, 250, panelHeight);
+  rect(WIDTH - playerPanelWidth, HEIGHT, playerPanelWidth, panelHeight);
   var t = [];
   t.push("Player 2");
   t.push("Score: " + player2.score);
   t.push("Health: " + player2.health);
-  t.push("Weapon alignment:" + player2.power);
+  t.push("Power:" + player2.power);
   fill(0, 0, 255);
-  text(t.join("\n"), WIDTH - 250 + 10, HEIGHT + 20);
-  
-  arc(WIDTH - 80, HEIGHT + 20, 80, 80, 0, /*PI+QUARTER_PI*/ map(player2.power, 0, 100, 0, 2*PI), PIE);
+  text(t.join("\n"), WIDTH - playerPanelWidth + playerPanelMarginX, HEIGHT + playerPanelMarginY);
+  // Sheild
+  arc(WIDTH - playerPanelWidth + 140, HEIGHT + 40, 60, 60, 0, /*PI+QUARTER_PI*/ map(player2.power, 0, 100, 0, 2*PI), PIE);
+  //text(player2.sheildMessage, HEIGHT + 40, WIDTH - playerPanelWidth + 200);
+  //text(player1.sheildMessage, WIDTH - panelWidth + 200, HEIGHT + 40);
+  text(player2.sheildMessage, WIDTH - playerPanelWidth + 200, HEIGHT + 40);
 }
 
 // I could make a few variations of this, or, at least, let me specify a gif to use
@@ -475,6 +483,7 @@ function Player() {
   this.enabled = true;
   this.visible = true;
   this.damage = 40;
+  this.sheildMessage = "";
   
   this.display = function() {
 
@@ -616,8 +625,11 @@ function Player() {
 
   this.raiseSheilds = function(val = 1) {
     // This is messy asf, so fix it later
+    //this.sheildMessage = "";
+
     if(!this.sheildIsUp && this.power < 50) {
-      console.log("Sheild raising denied, must have >50 power level");
+      //console.log("Sheild raising denied, must have >50 power level");
+      this.sheildMessage = "ERROR: Not enough power\nNeed to regenerate";
       this.power -= val;
       if(this.power < 1) {
         this.power = 1;
@@ -638,10 +650,16 @@ function Player() {
     if(this.power > 1) {
       this.power -= 1;
     }
+    this.sheildMessage = "Sheild: ACTIVE";
   }
   
   this.lowerSheilds = function() {
     this.sheildIsUp = false;
+    if(this.power < 50) {
+      this.sheildMessage = "Sheilds: LOW POWER";
+    } else {
+      this.sheildMessage = "Sheilds: READY";
+    }
   }
   
   this.detectCollisions = function(otherShip) {
@@ -688,13 +706,13 @@ function Player() {
     }
   }
   
-  this.hit = function(bullet) {
+  this.hit = function(bullet, recursiveEval=true) {
     // Deduct damage from bullet, but just hard code value for now
     if(!this.sheildIsUp) {
       this.health -= bullet.damage;
       console.log(bullet.hit);
-      if(bullet.hit) {
-        console.log("Object has a hit method");
+      if(bullet.hit && recursiveEval) {
+        bullet.hit(this, false);
       }
     }
     //console.log("Checking health: " + this.health);
