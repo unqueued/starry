@@ -23,8 +23,10 @@ http://javascript.info/tutorial/settimeout-setinterval
 [x] Implement health bars
 [ ] Straifing
 [ ] Make bigger
-[ ] Maybe have background
+[x] Maybe have background
 [ ] Scale entire thing up
+[ ] Remove bottom rectangels
+[ ] Fix text in other text screens
 
 */
 
@@ -239,7 +241,7 @@ function displayPanel() {
   rect(
     (WIDTH - playerPanelWidth) + (playerPanelWidth / 100) * 25,
     HEIGHT + 40,
-    map(player1.power, 0, 100, 0, (playerPanelWidth / 100) * 30),
+    map(player2.power, 0, 100, 0, (playerPanelWidth / 100) * 30),
     30
     );
 
@@ -387,6 +389,7 @@ function detectCollisions() {
 // TODO: enable sheilds even when controls disabled
 
 function handleInput() {
+  console.log(keyCode + "  pressed");
 
   if(gameState.state != "play") {
     return;
@@ -408,11 +411,11 @@ function handleInput() {
     if(keyIsDown(DOWN_ARROW)) {
       player1.retro();
     }
-    if(keyIsDown(80)) {
+    if(keyIsDown(80) || keyIsDown(51)) {
       player1.engageBoost();
     }
   }
-  if(keyIsDown(89)) {
+  if(keyIsDown(89) || keyIsDown(52)) {
     player1.raiseSheilds();
   } else {
     player1.lowerSheilds();
@@ -431,11 +434,11 @@ function handleInput() {
     if(keyIsDown(83)) {
       player2.retro();
     }
-    if(keyIsDown(71)) {
+    if(keyIsDown(71) || keyIsDown(53)) {
       player2.engageBoost();
     }
   }
-  if(keyIsDown(72)) {
+  if(keyIsDown(72) || keyIsDown(54)) {
     player2.raiseSheilds();
   } else {
     player2.lowerSheilds();
@@ -600,8 +603,8 @@ function GameState() {
         player1.display();
         player2.display();
 
-        player1.stopBoost();
-        player2.stopBoost();
+        //player1.stopBoost();
+        //player2.stopBoost();
 
         player1.sheild = 0;
         player2.sheild = 0;
@@ -670,7 +673,7 @@ function Player() {
   this.boostMessage = "";
   this.boostReady = true;
   //this.speedLimit = true;
-  this.boostPower = 0;
+  this.boostPower = 100;
   this.inputEnabled = true;
 
   this.display = function() {
@@ -831,7 +834,7 @@ function Player() {
       function() {
         console.log("Boost completed");
         self.stopBoost();
-      }, 300);
+      }, 400);
   }
 
   this.stopBoost = function() {
@@ -843,6 +846,7 @@ function Player() {
     }
 
     // Engage recharge timer
+    console.log("Recharging");
     var self = this;
     this.boostChargeID = setInterval(
       function() {
@@ -853,6 +857,7 @@ function Player() {
           console.log("Boost power charging complete");
           clearInterval(self.boostChargeID);
           self.boostReady = true;
+          console.log("Done recharging");
         }
         //console.log("Boost power: " + self.boostPower);
       }, 20
